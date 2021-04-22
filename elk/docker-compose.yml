@@ -1,0 +1,87 @@
+version: '3'
+
+services:
+
+  # Postgres
+  bibliotheque-postgres:
+    image: "postgres:13.2-alpine"
+    container_name: bibliotheque-postgres
+
+    volumes:
+      - bibliotheque-data:/var/lib/postgresql/data
+
+    ports:
+      - 5433:5432
+
+    environment:
+      - POSTGRES_DB=bibliotheque
+      - POSTGRES_USER=groupe2ws
+      - POSTGRES_PASSWORD=12345
+
+  # Back-end Spring boot application
+  bibliotheque-app:
+    build: ./
+    container_name: bibliotheque-app
+
+    ports:
+      - 8080:8080
+    links:
+      - bibliotheque-postgres
+
+# dockeriser elasticseach
+
+  elasticsearch-app:
+    build: ./
+    container_name: elasticsearch-app
+
+    ports:
+      - 9200:9200
+    links:
+      - bibliotheque-postgres
+
+# Dockeriser logstash
+
+  logstash-app:
+      build: ./
+      container_name: logstash-app
+
+      ports:
+      - 5044:5044
+      links:
+          - bibliotheque-postgres
+
+# Dockeriser Kibana
+
+  kibana-app:
+      build: ./
+      container_name: kibana-app
+
+      ports:
+          - 5601:5601
+      links:
+          - bibliotheque-postgres
+
+ # Dockeriser filebeat
+
+  filebeat-app:
+    build: ./
+    container_name: filebeat-app
+
+    ports:
+        - 5044:5044
+    links:
+          - bibliotheque-postgres
+
+
+  # Front-end Angular application
+  bibliotheque-ui:
+    build: ./front/projet-fil-rouge-front
+    container_name: bibliotheque-ui
+
+    ports:
+      - 4200:80
+    links:
+      - bibliotheque-app
+
+volumes:
+  bibliotheque-data:

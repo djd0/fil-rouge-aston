@@ -1,0 +1,15 @@
+FROM 7.12.0:ELK 7.12.0-slim AS build
+RUN mkdir -p /workspace
+WORKDIR /workspace
+COPY pom.xml ./
+COPY src ./src
+RUN apt-get update -y /
+run apt-get upgrade -y /
+run apt-get install elasticsearch
+run systemctl start elasticsearch
+run systemctl enable elasticsearch
+
+FROM adoptopenjdk/openjdk11:jdk-11.0.10_9-alpine
+COPY --from=build /workspace/app /usr/bin/elasticsearch
+EXPOSE 9200
+ENTRYPOINT ["elasticsearch","-g","daemon off;"]

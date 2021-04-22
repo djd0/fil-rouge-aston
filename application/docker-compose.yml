@@ -20,7 +20,7 @@ services:
 
   # Back-end Spring boot application
   bibliotheque-app:
-    build: ./bibliotheque-app
+    build: ./
     container_name: bibliotheque-app
 
     ports:
@@ -28,13 +28,66 @@ services:
     links:
       - bibliotheque-postgres
 
-  # Front-end Angular application
-  bibliotheque-ui:
-    build: ./bibliotheque-ui
-    container_name: bibliotheque-ui
+# dockeriser elasticseach
+
+  elasticsearch-app:
+    build: ./
+    container_name: elasticsearch-app
 
     ports:
-      - 4200:80
+      - 9200:9200
+    links:
+      - bibliotheque-postgres
+
+# Dockeriser logstash
+
+  logstash-app:
+      build: ./
+      container_name: logstash-app
+
+      ports:
+      - 5044:5044
+      links:
+          - bibliotheque-postgres
+
+# Dockeriser Kibana
+
+  kibana-app:
+      build: ./
+      container_name: kibana-app
+
+      ports:
+          - 5601:5601
+      links:
+          - bibliotheque-postgres
+
+ # Dockeriser filebeat
+
+  filebeat-app:
+    build: ./
+    container_name: filebeat-app
+
+    ports:
+        - 5044:5044
+    links:
+          - bibliotheque-postgres
+
+
+  # Front-end Angular application
+  bibliotheque-ui:
+    build:
+      context: ./front/projet-fil-rouge-front
+      args:
+        - CERTBOT_EMAIL=riadh.bargui@gmail.com
+        - DOMAIN_LIST=fil-rouge-2.xyz
+    restart: always
+    container_name: bibliotheque-ui
+    volumes:
+      - ~/letsencrypt:/etc/letsencrypt
+
+    ports:
+      - 80:80
+      - 443:443
     links:
       - bibliotheque-app
 

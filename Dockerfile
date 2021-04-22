@@ -1,4 +1,5 @@
 FROM maven:3.8.1-jdk-11-slim AS build
+LABEL stage=build
 RUN mkdir -p /workspace
 WORKDIR /workspace
 COPY pom.xml ./

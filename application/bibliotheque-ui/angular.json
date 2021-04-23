@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ProjetFilRougeFront": {
+    "bibliotheque-ui": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -62,11 +62,11 @@
                 }
               ]
             },
-            "development": {
+            "preproduction": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.dev.ts"
+                  "with": "src/environments/environment.preprod.ts"
                 }
               ]
             }
@@ -75,21 +75,21 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ProjetFilRougeFront:build"
+            "browserTarget": "bibliotheque-ui:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ProjetFilRougeFront:build:production"
+              "browserTarget": "bibliotheque-ui:build:production"
             },
-            "development": {
-              "browserTarget": "ProjetFilRougeFront:build:development"
+            "preproduction": {
+              "browserTarget": "bibliotheque-ui:build:preproduction"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ProjetFilRougeFront:build"
+            "browserTarget": "bibliotheque-ui:build"
           }
         },
         "test": {
@@ -127,21 +127,21 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "ProjetFilRougeFront:serve"
+            "devServerTarget": "bibliotheque-ui:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "ProjetFilRougeFront:serve:production"
+              "devServerTarget": "bibliotheque-ui:serve:production"
             },
             "development": {
-              "devServerTarget": "ProjetFilRougeFront:serve:development"
+              "devServerTarget": "bibliotheque-ui:serve:development"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "ProjetFilRougeFront",
+  "defaultProject": "bibliotheque-ui",
   "cli": {
     "analytics": "3f6c5ff4-1753-4991-9c99-48bbb8206838"
   }

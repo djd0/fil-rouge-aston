@@ -50,7 +50,7 @@ La commande permet de lancer 3 containers contenant respectivement :
 - L'interface web sous Angular
 - L'API REST sous Java
 
-L'interface web est accessible depuis un navigateur à l'adresse http://localhost:4200
+L'interface web est accessible depuis un navigateur à l'adresse http://localhost
 
 Vous pouvez changer l'environnement de build dans les Dockerfile de l'UI et de l'API si nécessaire.  
 Ceux-ci étant par défaut sur le profil développement.  
@@ -64,6 +64,10 @@ docker image prune --filter label=stage=build
 Si vous voulez tout détruire : 
 
 ```shell
-# Si vous voulez conserver vos données postgreSQL, retirer le -v de la commande
+# Si vous stopper les container
+docker-compose down
+# Si vous stopper et detruire les images en conservant vos données postgreSQL
+docker-compose down --rmi all
+# Si tout detruire données comprises
 docker-compose down --rmi all -v 
 ```

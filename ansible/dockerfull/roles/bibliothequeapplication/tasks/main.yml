@@ -1,0 +1,199 @@
+---
+
+# BUILD PREPROD APP IMAGE AND PUSH DOCKERHUB
+- name: Build preprod app image and send it to DockerHub
+  docker_image:
+    build:
+      path: /home/{{ ansible_ssh_user }}/Bureau/WorkSpace/fil-rouge-aston/application/bibliotheque-app
+      args:
+        maven_build_env: mvn -f pom.xml clean package -Ppreprod
+    state: present
+    source: build
+    name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-app-preprod
+    tag: latest
+    push: yes
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushPreprodAppImage
+    - freshInstallApplication
+
+# REMOVE PREPROD LOCAL IMAGE
+- name: Remove preprod app local image
+  docker_image:
+    state: absent
+    name:  dhaeseq/projet-fil-rouge-groupe2
+    tag: bibliotheque-app-preprod
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushPreprodAppImage
+    - removePreprodLocalAppImage
+    - freshInstallApplication
+
+# BUILD PROD APP IMAGE AND PUSH DOCKERHUB
+- name: Build prod app image and send it to DockerHub
+  docker_image:
+    build:
+      path: /home/{{ ansible_ssh_user }}/Bureau/WorkSpace/fil-rouge-aston/application/bibliotheque-app
+      args:
+        maven_build_env: mvn -f pom.xml clean package -Pprod
+    state: present
+    source: build
+    name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-app-prod
+    tag: latest
+    push: yes
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushProdAppImage
+    - freshInstallApplication
+
+# REMOVE PROD LOCAL IMAGE
+- name: Remove prod app local image
+  docker_image:
+    state: absent
+    name:  dhaeseq/projet-fil-rouge-groupe2
+    tag: bibliotheque-app-prod
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushProdAppImage
+    - removeProdLocalAppImage
+    - freshInstallApplication
+
+# BUILD PREPROD UI IMAGE AND PUSH DOCKERHUB
+- name: Build preprod ui image and send it to DockerHub
+  docker_image:
+    build:
+      path: /home/{{ ansible_ssh_user }}/Bureau/WorkSpace/fil-rouge-aston/application/bibliotheque-ui
+      args:
+        angular_build_env: "node_modules/.bin/ng build --configuration=preproduction"
+    state: present
+    source: build
+    name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-ui-preprod
+    tag: latest
+    push: yes
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushPreprodUiImage
+    - freshInstallApplication
+
+# REMOVE PREPROD LOCAL IMAGE
+- name: Remove preprod ui local image
+  docker_image:
+    state: absent
+    name:  dhaeseq/projet-fil-rouge-groupe2
+    tag: bibliotheque-ui-preprod
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushPreprodUiImage
+    - removePreprodLocalUiImage
+    - freshInstallApplication
+
+# BUILD PROD UI IMAGE AND PUSH DOCKERHUB
+- name: Build prod ui image and send it to DockerHub
+  docker_image:
+    build:
+      path: /home/{{ ansible_ssh_user }}/Bureau/WorkSpace/fil-rouge-aston/application/bibliotheque-ui
+      args:
+        angular_build_env: "node_modules/.bin/ng build --configuration=production"
+    state: present
+    source: build
+    name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-ui-prod
+    tag: latest
+    push: yes
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushProdUiImage
+    - freshInstallApplication
+
+# REMOVE PROD LOCAL IMAGE
+- name: Remove prod ui local image
+  docker_image:
+    state: absent
+    name:  dhaeseq/projet-fil-rouge-groupe2
+    tag: bibliotheque-ui-prod
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushProdUiImage
+    - removeProdLocalUiImage
+    - freshInstallApplication
+
+# COPY DOCKER-COMPOSE
+- name: Copy docker-compose
+  template:
+    src: docker-compose.yml
+    dest: /home/{{ ansible_ssh_user }}/bibliotheque/
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewProdBibliothequeApp
+    - runNewPreprodBibliothequeApp
+    - copyBibliothequeAppDockerCompose
+    - freshInstallApplication
+
+# REMOVE EXISTING BIBLIOTHEQUE APP
+- name: Remove existing bibliotheque app
+  docker_compose:
+    project_src: /home/{{ ansible_ssh_user }}/bibliotheque/
+    state: absent
+    remove_images: all
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewProdBibliothequeApp
+    - runNewPreprodBibliothequeApp
+    - reloadBibliothequeApp
+    - removeOldBibliothequeApp
+    - freshInstallApplication
+
+# PULL PROD APP IMAGE
+- name: Pull prod app image
+  docker_image:
+    name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-app-prod
+    source: pull
+  when: inventory_hostname == "prodfilrouge"
+  tags:
+    - runNewProdBibliothequeApp
+    - pullProdAppImage
+    - freshInstallApplication
+
+# PULL PREPROD APP IMAGE
+- name: Pull preprod app image
+  docker_image:
+    name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-app-preprod
+    source: pull
+  when: inventory_hostname == "devfilrouge"
+  tags:
+    - runNewPreprodBibliothequeApp
+    - pullPreprodAppImage
+    - freshInstallApplication
+
+# PULL PROD UI IMAGE
+- name: Pull prod ui image
+  docker_image:
+    name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-ui-prod
+    source: pull
+  when: inventory_hostname == "prodfilrouge"
+  tags:
+    - runNewProdBibliothequeApp
+    - pullProdUiImage
+    - freshInstallApplication
+
+# PULL PREPROD UI IMAGE
+- name: Pull preprod ui image
+  docker_image:
+    name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-ui-preprod
+    source: pull
+  when: inventory_hostname == "devfilrouge"
+  tags:
+    - runNewPreprodBibliothequeApp
+    - pullPreprodUiImage
+    - freshInstallApplication
+
+# RUN IMAGE
+- name: Run bibliotheque image
+  docker_compose:
+    project_src: /home/{{ ansible_ssh_user }}/bibliotheque
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewPreprodBibliothequeApp
+    - runNewProdBibliothequeApp
+    - reloadBibliothequeApp
+    - runBibliothequeAppImage
+    - freshInstallApplication

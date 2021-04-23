@@ -1,0 +1,16 @@
+---
+
+# Ubuntu Tasks
+- include_tasks: ubuntu/setupUbuntu.yml
+  when: ansible_distribution == "Ubuntu"
+  tags:
+    - freshCommonUbuntu
+    - configFail2BanUbuntu
+    - updateUpgradeUbuntu
+    - installBasicPkgsUbuntu
+    - configureUnattendtedUpgradesUbuntu
+    - enableAutoUpgradesUbuntu
+    - copyIpTablesUbuntu
+    - copyIpTablesOnBootUbuntu
+    - setMailAliasUbuntu
+    - configureExim4Ubuntu

@@ -1,0 +1,11 @@
+---
+
+ansible_host: localhost
+ansible_ssh_user: vagrant
+ansible_ssh_password: vagrant
+ansible_sudo_pass: vagrant
+dockerhub_username: test
+dockerhub_password: test
+env: local
+angular_build_env: node_modules/.bin/ng build
+maven_build_env: mvn -f pom.xml clean package

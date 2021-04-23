@@ -1,0 +1,12 @@
+---
+
+ansible_host: 192.168.8.101
+ansible_ssh_user: ubuntu
+ansible_ssh_password: 12345
+ansible_sudo_pass: 12345
+pg_password: 12345
+dockerhub_username: test
+dockerhub_password: test
+env: preprod
+angular_build_env: node_modules/.bin/ng build --configuration="preproduction"
+maven_build_env: mvn -f pom.xml clean package -Ppreprod

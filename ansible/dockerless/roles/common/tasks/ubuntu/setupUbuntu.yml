@@ -1,0 +1,129 @@
+---
+
+- include_vars: vault.yml
+  tags:
+    - configFail2BanUbuntu
+    - freshCommonUbuntu
+
+# MAJ SYSTEM
+- name: Update & Upgrade system
+  apt:
+    update_cache: yes
+    upgrade: dist
+  become: yes
+  tags:
+    - updateUpgradeUbuntu
+    - freshCommonUbuntu
+
+# BASIC PACKAGES INSTALL
+- name: Install base soft
+  apt:
+    name:
+      - apt-transport-https
+      - software-properties-common
+      - fail2ban
+      - exim4
+      - htop
+      - glances
+      - iotop
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - unattended-upgrades
+      - wget
+      - gnupg2
+    state: present
+    update_cache: true
+  become: yes
+  tags:
+    - installBasicPkgsUbuntu
+    - freshCommonUbuntu
+
+# UNATTENDED-UPGRADES CONFIG
+- name: Configure unattended-upgrades
+  replace:
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.replace }}"
+  with_items:
+    - { regexp: '//Unattended-Upgrade::Mail "root";', replace: 'Unattended-Upgrade::Mail "{{ email }}";' }
+    - { regexp: '//Unattended-Upgrade::MailOnlyOnError "true";', replace: 'Unattended-Upgrade::MailOnlyOnError "true";' }
+    - { regexp: '//Unattended-Upgrade::Remove-Unused-Dependencies "false";', replace: 'Unattended-Upgrade::Remove-Unused-Dependencies "true";' }
+  become: yes
+  tags:
+    - configureUnattendtedUpgradesUbuntu
+    - freshCommonUbuntu
+
+- name: Enable auto-upgrades
+  copy:
+    src: 20auto-upgrades
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+  become: yes
+  tags:
+    - enableAutoUpgradesUbuntu
+    - freshCommonUbuntu
+
+# TODO voir pour faire une config ssh sécurisé avec le fichier sshServerConfig
+# CONFIG SSH
+#- name: Upload ssh server config
+#  copy:
+#    src: sshServerConfig
+#    dest: /etc/ssh/sshd_config
+#    mode: 0644
+#  tags:
+#    - freshCommonUbuntu
+#    - copySshConfigUbuntu
+
+# IPTABLES ( Ferme tout sauf le web, SSH, et les services de bases comme DNS, DHCP... )
+- name: Install iptables.sh
+  copy:
+    src: iptables.sh
+    dest: /usr/local/sbin/iptables.sh
+    mode: 0744
+  become: yes
+  tags:
+    - copyIpTablesUbuntu
+    - freshCommonUbuntu
+
+- name: Make IPTable start on boot
+  copy:
+    src: rc.local
+    dest: /etc/rc.local
+    mode: 0755
+  become: yes
+  tags:
+    - copyIpTablesOnBootUbuntu
+    - freshCommonUbuntu
+
+# FAIL2BAN ( configure le parefeu iptables avec des regles pour se proteger des attaques exterieures )
+- name: Upload fail2Ban config
+  template:
+    src: fail2ban.conf
+    dest: /etc/fail2ban/jail.d/defaults-debian.conf
+    mode: 0644
+  become: yes
+  tags:
+    - configFail2BanUbuntu
+    - freshCommonUbuntu
+
+# MAIL ALIASES
+- name: Configure /etc/aliases
+  lineinfile:
+    dest: /etc/aliases
+    regexp: ^root:.*
+    line: "root: {{ email }}"
+  become: yes
+  tags:
+    - setMailAliasUbuntu
+    - freshCommonUbuntu
+
+# EXIM4 ( Outil MTA pour remplacer sendMail )
+- name: Configure Exim4
+  replace:
+    dest: /etc/exim4/update-exim4.conf.conf
+    regexp: "dc_eximconfig_configtype='local'"
+    replace: "dc_eximconfig_configtype='internet'"
+  become: yes
+  tags:
+    - configureExim4Ubuntu
+    - freshCommonUbuntu

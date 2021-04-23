@@ -22,7 +22,6 @@ services:
   bibliotheque-app:
     image: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-app-{{ env }}
     container_name: bibliotheque-app
-
     ports:
       - 8080:8080
     links:
@@ -32,9 +31,12 @@ services:
   bibliotheque-ui:
     image: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-ui-{{ env }}
     container_name: bibliotheque-ui
-
+    restart: always
+    volumes:
+      - ./letsencrypt:/etc/letsencrypt
     ports:
-      - 80:80
+      - 19000:80
+      - 443:443
     links:
       - bibliotheque-app
 

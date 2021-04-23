@@ -34,15 +34,18 @@ services:
 
   # Front-end Angular application
   bibliotheque-ui:
+
     build:
       context: ./bibliotheque-ui
       args:
         angular_build_env: ${angular_build_env}
-
+    restart: always
     container_name: bibliotheque-ui-${env}
-
+    volumes:
+      - letsencrypt:/etc/letsencrypt
     ports:
-      - 80:80
+      - 19000:80
+      - 443:443
     links:
       - bibliotheque-app
 

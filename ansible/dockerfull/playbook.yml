@@ -5,6 +5,7 @@
     - { role: docker }
     - { role: dokuwiki }
     - { role: bibliothequeapplication }
+    - { role: elk }
 
 - hosts: devfilrouge
   roles:
@@ -18,3 +19,9 @@
     - { role: common }
     - { role: docker }
     - { role: bibliothequeapplication }
+
+- hosts: elk1
+  roles:
+    - { role: common }
+    - { role: docker }
+    - { role: elk }

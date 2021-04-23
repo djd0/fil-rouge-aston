@@ -1,87 +1,44 @@
-version: '3'
+version: '2.2'
 
 services:
 
-  # Postgres
-  bibliotheque-postgres:
-    image: "postgres:13.2-alpine"
-    container_name: bibliotheque-postgres
+# Dockeriser filebeat
 
-    volumes:
-      - bibliotheque-data:/var/lib/postgresql/data
+  filebeat-app:
+    build: ./filebeat
+    container_name: filebeat-app
 
     ports:
-      - 5433:5432
-
-    environment:
-      - POSTGRES_DB=bibliotheque
-      - POSTGRES_USER=groupe2ws
-      - POSTGRES_PASSWORD=12345
-
-  # Back-end Spring boot application
-  bibliotheque-app:
-    build: ./
-    container_name: bibliotheque-app
-
-    ports:
-      - 8080:8080
-    links:
-      - bibliotheque-postgres
-
-# dockeriser elasticseach
-
-  elasticsearch-app:
-    build: ./
-    container_name: elasticsearch-app
-
-    ports:
-      - 9200:9200
-    links:
-      - bibliotheque-postgres
+      - 5400:5400
 
 # Dockeriser logstash
 
   logstash-app:
-      build: ./
-      container_name: logstash-app
+    build: ./logstash
+    container_name: logstash-app
 
-      ports:
-      - 5044:5044
-      links:
-          - bibliotheque-postgres
+    ports:
+      - 5040:5040
+
+
+# dockeriser elasticseach
+
+  elasticsearch-app:
+    build: ./elastic
+    container_name: elasticsearch-app
+
+    ports:
+      - 9200:9200
 
 # Dockeriser Kibana
 
   kibana-app:
-      build: ./
+      build: ./kibana
       container_name: kibana-app
 
       ports:
           - 5601:5601
-      links:
-          - bibliotheque-postgres
-
- # Dockeriser filebeat
-
-  filebeat-app:
-    build: ./
-    container_name: filebeat-app
-
-    ports:
-        - 5044:5044
-    links:
-          - bibliotheque-postgres
 
 
-  # Front-end Angular application
-  bibliotheque-ui:
-    build: ./front/projet-fil-rouge-front
-    container_name: bibliotheque-ui
 
-    ports:
-      - 4200:80
-    links:
-      - bibliotheque-app
 
-volumes:
-  bibliotheque-data:

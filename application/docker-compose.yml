@@ -11,21 +11,21 @@ services:
       - bibliotheque-data:/var/lib/postgresql/data
 
     ports:
-      - 5433:5432
+      - 5432:5432
 
     environment:
       - POSTGRES_DB=bibliotheque
       - POSTGRES_USER=groupe2ws
-      - POSTGRES_PASSWORD=${postgres_password}
+      - POSTGRES_PASSWORD=12345
 
   # Back-end Spring boot application
   bibliotheque-app:
     build:
       context: ./bibliotheque-app
       args:
-        maven_build_env: ${maven_build_env}
+        maven_build_env: mvn -f pom.xml clean package
 
-    container_name: bibliotheque-app-${env}
+    container_name: bibliotheque-app-local
 
     ports:
       - 8080:8080
@@ -38,14 +38,12 @@ services:
     build:
       context: ./bibliotheque-ui
       args:
-        angular_build_env: ${angular_build_env}
+        angular_build_env: node_modules/.bin/ng build
+        env: local
     restart: always
-    container_name: bibliotheque-ui-${env}
-    volumes:
-      - letsencrypt:/etc/letsencrypt
+    container_name: bibliotheque-ui-local
     ports:
-      - 19000:80
-      - 443:443
+      - 80:80
     links:
       - bibliotheque-app
 

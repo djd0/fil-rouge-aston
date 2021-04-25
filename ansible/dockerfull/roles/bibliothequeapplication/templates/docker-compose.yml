@@ -11,7 +11,7 @@ services:
       - bibliotheque-data:/var/lib/postgresql/data
 
     ports:
-      - 5433:5432
+      - 5432:5432
 
     environment:
       - POSTGRES_DB=bibliotheque
@@ -21,9 +21,12 @@ services:
   # Back-end Spring boot application
   bibliotheque-app:
     image: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-app-{{ env }}
+    environment:
+      - SPRING_PROFILES_ACTIVE={{ env }}
+      - SPRING_DATASOURCE_PASSWORD={{ pg_password }}
     container_name: bibliotheque-app
     ports:
-      - 8080:8080
+      - 8080:8443
     links:
       - bibliotheque-postgres
 
@@ -33,12 +36,13 @@ services:
     container_name: bibliotheque-ui
     restart: always
     volumes:
-      - ./letsencrypt:/etc/letsencrypt
+      - letsencrypt:/etc/letsencrypt
     ports:
-      - 19000:80
+      - 80:80
       - 443:443
     links:
       - bibliotheque-app
 
 volumes:
   bibliotheque-data:
+  letsencrypt:

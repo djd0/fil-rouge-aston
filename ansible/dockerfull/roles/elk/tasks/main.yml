@@ -135,6 +135,19 @@
     - pullLogstashImage
     - freshInstallElk
 
+# SET MMAP COUNTS
+- name: set mmap counts for elasticsearch
+  sysctl:
+    name: vm.max_map_count
+    value: '262144'
+    state: present
+    sysctl_set: yes
+  become: yes
+  when: inventory_hostname in groups.elkservers
+  tags:
+    - setMmapCount
+    - freshInstallElk
+
 # RUN ELK IMAGES
 - name: Run elk image
   docker_compose:

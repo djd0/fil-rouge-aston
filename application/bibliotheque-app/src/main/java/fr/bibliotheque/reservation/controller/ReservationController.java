@@ -21,7 +21,7 @@ import java.util.Map;
 @Slf4j
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @RestController
-@RequestMapping("reservations")
+@RequestMapping("api/reservations")
 public class ReservationController {
 
     private final IReservationService reservationService;

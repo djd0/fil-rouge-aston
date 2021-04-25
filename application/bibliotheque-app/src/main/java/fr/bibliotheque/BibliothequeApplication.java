@@ -25,7 +25,8 @@ public class BibliothequeApplication {
                         .allowedOrigins(
                                 "http://localhost",
                                 "http://158.69.21.143",
-                                "http://fil-rouge-2.xyz");
+                                "http://fil-rouge-2.xyz",
+                                "https://fil-rouge-2.xyz");
             }
         };
     }

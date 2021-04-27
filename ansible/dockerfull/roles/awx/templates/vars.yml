@@ -1,5 +1,0 @@
----
-
-admin_password: "{{ awx_password }}"
-pg_password: "{{ awx_pg_password }}"
-secret_key: "{{ awx_secret_key }}"

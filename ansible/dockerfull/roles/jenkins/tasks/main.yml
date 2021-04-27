@@ -1,0 +1,33 @@
+---
+
+# COPY DOCKER-COMPOSE
+- name: Copy docker-compose
+  copy:
+    src: docker-compose.yml
+    dest: /home/{{ ansible_ssh_user }}/jenkins/
+  when: inventory_hostname in groups.jenkins
+  tags:
+    - copyJenkinsStackDockerCompose
+    - freshInstallJenkinsStack
+
+# REMOVE EXISTING JENKINS STACK
+- name: Remove existing jenkins stack
+  docker_compose:
+    project_src: /home/{{ ansible_ssh_user }}/jenkins/
+    state: absent
+    remove_images: all
+  when: inventory_hostname in groups.jenkins
+  tags:
+    - reloadJenkinsStack
+    - removeOldJenkinsStack
+    - freshInstallJenkinsStack
+
+# RUN JENKINS STACK IMAGES
+- name: Run jenkins stack image
+  docker_compose:
+    project_src: /home/{{ ansible_ssh_user }}/jenkins
+  when: inventory_hostname in groups.jenkins
+  tags:
+    - reloadJenkinsStack
+    - runJenkinsStackImages
+    - freshInstallJenkinsStack

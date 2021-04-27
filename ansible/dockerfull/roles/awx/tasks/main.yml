@@ -1,65 +1,29 @@
 ---
 
-# GIT CLONE AWX
-- name: Clone awx repo
-  git:
-    clone: yes
-    dest: /home/{{ ansible_ssh_user }}
-    repo: https://github.com/ansible/awx.git
-    version: 17.1.0
-  tags:
-    - getAwxGit
-    - freshInstallAwx
-
-# INSTALL PYTHON3 WHEEL
-- name: Install wheel with python
-  pip:
-    name: wheel
-    executable: pip3
-  tags:
-    - installWheel
-    - freshInstallAwx
-
-# INSTALL PYTHON3 REQUESTS
-- name: Install requests with python
-  pip:
-    name: requests
-    executable: pip3
-  tags:
-    - installRequests
-    - freshInstallAwx
-
-# INSTALL PYTHON3 ANSIBLE
-- name: Install ansible with python
-  pip:
-    name: ansible
-    executable: pip3
-  tags:
-    - installAnsible
-    - freshInstallAwx
-
-# SET AWX CREDENTIALS
-- name: Set awx credentials
-  template:
-    src: vars.yml
-    dest: /home/{{ ansible_ssh_user }}/awx/installer/vars.yml
-  become: yes
-  tags:
-    - SetAwxCredentials
-    - freshInstallAwx
-
-# LAUNCH AWX PLAYBOOK
-- name: launch awx playbook
-  command: ansible-playbook -i /home/{{ ansible_ssh_user }}/awx/installer/inventory /home/{{ ansible_ssh_user }}/awx/installer/install.yml -e @vars.yml
-  tags:
-    - launchAwxPlaybook
-    - freshInstallAwx
+# TODO make install awx with ansible
+#  cd
+#  git clone https://github.com/ansible/awx.git
+#  cd awx
+#  git checkout 17.1.0
+#  python3 -m venv venv
+#  source venv/bin/activate
+#  pip3 install wheel
+#  pip3 install requests
+#  pip3 install docker
+#  pip3 install docker-compose
+#  pip3 install ansible
+#  cd installer
+## open a file vars.yml
+#admin_password: 'adminpass'
+#pg_password: 'pgpass'
+#secret_key: 'mysupersecret'
+#  ansible-playbook -i inventory install.yml -e @vars.yml
 
 # CLONE ANSIBLE PROJECT
 - name: Clone ansible project
   git:
     clone: yes
-    dest: /home/{{ ansible_ssh_user }}
+    dest: /home/{{ ansible_ssh_user }}/fil-rouge-aston
     repo: https://github.com/dhaeseq/fil-rouge-aston
     version: production
   tags:

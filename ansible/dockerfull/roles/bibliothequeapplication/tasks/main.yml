@@ -1,7 +1,7 @@
 ---
 
-# BUILD PREPROD APP IMAGE AND PUSH DOCKERHUB
-- name: Build preprod app image and send it to DockerHub
+# BUILD PREPROD APP IMAGE WITH SOURCES AND PUSH DOCKERHUB
+- name: Build preprod app image with sources and send it to DockerHub
   docker_image:
     build:
       path: /home/{{ ansible_ssh_user }}/Bureau/WorkSpace/fil-rouge-aston/application/bibliotheque-app
@@ -14,8 +14,25 @@
     push: yes
   when: inventory_hostname == "localhost"
   tags:
-    - buildAndPushPreprodAppImage
+    - buildAndPushPreprodAppImageWithSources
     - freshInstallApplication
+
+# BUILD PREPROD APP IMAGE FROM NEXUS AND PUSH DOCKERHUB
+- name: Build preprod app image from nexus and send it to DockerHub
+  docker_image:
+    build:
+      path: "{{ role_path }}/files/app"
+      args:
+        nexus_server: "{{ ansible_host }}"
+        version: maven-snapshots
+    state: present
+    source: build
+    name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-app-preprod
+    tag: latest
+    push: yes
+  when: inventory_hostname in groups.jenkins
+  tags:
+    - buildAndPushPreprodAppNexusImage
 
 # REMOVE PREPROD LOCAL IMAGE
 - name: Remove preprod app local image
@@ -25,12 +42,13 @@
     tag: bibliotheque-app-preprod
   when: inventory_hostname == "localhost"
   tags:
-    - buildAndPushPreprodAppImage
+    - buildAndPushPreprodAppNexusImage
+    - buildAndPushPreprodAppImageWithSources
     - removePreprodLocalAppImage
     - freshInstallApplication
 
-# BUILD PROD APP IMAGE AND PUSH DOCKERHUB
-- name: Build prod app image and send it to DockerHub
+# BUILD PROD APP IMAGE WITH SOURCES AND PUSH DOCKERHUB
+- name: Build prod app image with sources and send it to DockerHub
   docker_image:
     build:
       path: /home/{{ ansible_ssh_user }}/Bureau/WorkSpace/fil-rouge-aston/application/bibliotheque-app
@@ -43,8 +61,25 @@
     push: yes
   when: inventory_hostname == "localhost"
   tags:
-    - buildAndPushProdAppImage
+    - buildAndPushProdAppImageWithSources
     - freshInstallApplication
+
+# BUILD PROD APP IMAGE FROM NEXUS AND PUSH DOCKERHUB
+- name: Build prod app image from nexus and send it to DockerHub
+  docker_image:
+    build:
+      path: "{{ role_path }}/files/app"
+      args:
+        nexus_server: "{{ ansible_host }}"
+        version: maven-releases
+    state: present
+    source: build
+    name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-app-prod
+    tag: latest
+    push: yes
+  when: inventory_hostname in groups.jenkins
+  tags:
+    - buildAndPushProdAppNexusImage
 
 # REMOVE PROD LOCAL IMAGE
 - name: Remove prod app local image
@@ -54,12 +89,13 @@
     tag: bibliotheque-app-prod
   when: inventory_hostname == "localhost"
   tags:
-    - buildAndPushProdAppImage
+    - buildAndPushProdAppNexusImage
+    - buildAndPushProdAppImageWithSources
     - removeProdLocalAppImage
     - freshInstallApplication
 
-# BUILD PREPROD UI IMAGE AND PUSH DOCKERHUB
-- name: Build preprod ui image and send it to DockerHub
+# BUILD PREPROD UI IMAGE WITH SOURCES AND PUSH DOCKERHUB
+- name: Build preprod ui image with sources and send it to DockerHub
   docker_image:
     build:
       path: /home/{{ ansible_ssh_user }}/Bureau/WorkSpace/fil-rouge-aston/application/bibliotheque-ui
@@ -73,8 +109,26 @@
     push: yes
   when: inventory_hostname == "localhost"
   tags:
-    - buildAndPushPreprodUiImage
+    - buildAndPushPreprodUiImageWithSources
     - freshInstallApplication
+
+# BUILD PREPROD UI IMAGE FROM NEXUS AND PUSH DOCKERHUB
+- name: Build preprod ui image from nexus and send it to DockerHub
+  docker_image:
+    build:
+      path: "{{ role_path }}/files/ui"
+      args:
+        nexus_server: "{{ ansible_host }}"
+        version: angular-snapshots
+        env: preprod
+    state: present
+    source: build
+    name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-ui-preprod
+    tag: latest
+    push: yes
+  when: inventory_hostname in groups.jenkins
+  tags:
+    - buildAndPushPreprodUiNexusImage
 
 # REMOVE PREPROD LOCAL IMAGE
 - name: Remove preprod ui local image
@@ -84,12 +138,13 @@
     tag: bibliotheque-ui-preprod
   when: inventory_hostname == "localhost"
   tags:
-    - buildAndPushPreprodUiImage
+    - buildAndPushPreprodUiNexusImage
+    - buildAndPushPreprodUiImageWithSources
     - removePreprodLocalUiImage
     - freshInstallApplication
 
-# BUILD PROD UI IMAGE AND PUSH DOCKERHUB
-- name: Build prod ui image and send it to DockerHub
+# BUILD PROD UI IMAGE WITH SOURCES AND PUSH DOCKERHUB
+- name: Build prod ui image with sources and send it to DockerHub
   docker_image:
     build:
       path: /home/{{ ansible_ssh_user }}/Bureau/WorkSpace/fil-rouge-aston/application/bibliotheque-ui
@@ -103,8 +158,26 @@
     push: yes
   when: inventory_hostname == "localhost"
   tags:
-    - buildAndPushProdUiImage
+    - buildAndPushProdUiImageWithSources
     - freshInstallApplication
+
+# BUILD PROD UI IMAGE FROM NEXUS AND PUSH DOCKERHUB
+- name: Build prod ui image from nexus and send it to DockerHub
+  docker_image:
+    build:
+      path: "{{ role_path }}/files/ui"
+      args:
+        nexus_server: "{{ ansible_host }}"
+        version: angular-releases
+        env: prod
+    state: present
+    source: build
+    name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-ui-prod
+    tag: latest
+    push: yes
+  when: inventory_hostname in groups.jenkins
+  tags:
+    - buildAndPushProdUiNexusImage
 
 # REMOVE PROD LOCAL IMAGE
 - name: Remove prod ui local image
@@ -114,7 +187,8 @@
     tag: bibliotheque-ui-prod
   when: inventory_hostname == "localhost"
   tags:
-    - buildAndPushProdUiImage
+    - buildAndPushProdUiNexusImage
+    - buildAndPushProdUiImageWithSources
     - removeProdLocalUiImage
     - freshInstallApplication
 

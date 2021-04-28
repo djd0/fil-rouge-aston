@@ -23,7 +23,7 @@
     build:
       path: "{{ role_path }}/files/app"
       args:
-        nexus_server: "{{ ansible_host }}"
+        nexus_server: "{{ nexus_host }}"
         version: maven-snapshots
     state: present
     source: build
@@ -70,7 +70,7 @@
     build:
       path: "{{ role_path }}/files/app"
       args:
-        nexus_server: "{{ ansible_host }}"
+        nexus_server: "{{ nexus_host }}"
         version: maven-releases
     state: present
     source: build
@@ -192,18 +192,6 @@
     - removeProdLocalUiImage
     - freshInstallApplication
 
-# COPY DOCKER-COMPOSE
-- name: Copy docker-compose
-  template:
-    src: docker-compose.yml
-    dest: /home/{{ ansible_ssh_user }}/bibliotheque/
-  when: inventory_hostname != "localhost"
-  tags:
-    - runNewProdBibliothequeApp
-    - runNewPreprodBibliothequeApp
-    - copyBibliothequeAppDockerCompose
-    - freshInstallApplication
-
 # REMOVE EXISTING BIBLIOTHEQUE APP
 - name: Remove existing bibliotheque app
   docker_compose:
@@ -216,6 +204,18 @@
     - runNewPreprodBibliothequeApp
     - reloadBibliothequeApp
     - removeOldBibliothequeApp
+    - freshInstallApplication
+
+# COPY DOCKER-COMPOSE
+- name: Copy docker-compose
+  template:
+    src: docker-compose.yml
+    dest: /home/{{ ansible_ssh_user }}/bibliotheque/
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewProdBibliothequeApp
+    - runNewPreprodBibliothequeApp
+    - copyBibliothequeAppDockerCompose
     - freshInstallApplication
 
 # PULL PROD APP IMAGE

@@ -1,13 +1,29 @@
 ---
 
-# COPY DOCKER-COMPOSE
-- name: Copy docker-compose
-  copy:
-    src: docker-compose.yml
-    dest: /home/{{ ansible_ssh_user }}/jenkins/
-  when: inventory_hostname in groups.jenkins
+# BUILD JENKINS IMAGE AND PUSH DOCKERHUB
+- name: Build jenkins image and send it to DockerHub
+  docker_image:
+    build:
+      path: "{{ role_path }}/files"
+    source: build
+    name: dhaeseq/projet-fil-rouge-groupe2:jenkins
+    tag: latest
+    push: yes
+  when: inventory_hostname == "localhost"
   tags:
-    - copyJenkinsStackDockerCompose
+    - buildAndPushJenkinsImage
+    - freshInstallJenkinsStack
+
+# REMOVE JENKINS LOCAL IMAGE
+- name: Remove jenkins local image
+  docker_image:
+    state: absent
+    name: dhaeseq/projet-fil-rouge-groupe2
+    tag: jenkins
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushJenkinsImage
+    - removeLocalJenkinsImage
     - freshInstallJenkinsStack
 
 # REMOVE EXISTING JENKINS STACK
@@ -20,6 +36,16 @@
   tags:
     - reloadJenkinsStack
     - removeOldJenkinsStack
+    - freshInstallJenkinsStack
+
+# COPY DOCKER-COMPOSE
+- name: Copy docker-compose
+  copy:
+    src: docker-compose.yml
+    dest: /home/{{ ansible_ssh_user }}/jenkins/
+  when: inventory_hostname in groups.jenkins
+  tags:
+    - copyJenkinsStackDockerCompose
     - freshInstallJenkinsStack
 
 # RUN JENKINS STACK IMAGES

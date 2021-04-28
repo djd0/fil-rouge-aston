@@ -7,3 +7,7 @@ ansible_sudo_pass: "{{ vault_ansible_sudo_pass }}"
 pg_password: "{{ vault_pg_password }}"
 dockerhub_username: "{{ vault_dockerhub_username }}"
 dockerhub_password: "{{ vault_dockerhub_password }}"
+nexus_host: "{{ vault_nexus_host }}"
+env: local
+angular_build_env: node_modules/.bin/ng build
+maven_build_env: mvn -f pom.xml clean package

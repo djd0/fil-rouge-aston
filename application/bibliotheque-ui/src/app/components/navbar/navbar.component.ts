@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 
 
@@ -7,7 +7,7 @@ import { Location } from '@angular/common';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
-export class NavBarComponent {
+export class NavBarComponent implements OnInit {
 
   public selectedVal: string;
 
@@ -15,22 +15,22 @@ export class NavBarComponent {
 
   }
 
-  ngOnInit(){
+  ngOnInit(): void {
 
-    var uri: String = window.location.href.split('/').pop();
+    const uri: string = window.location.href.split('/').pop();
 
-    if(uri == '') {
-        this.selectedVal ='accueil';
+    if (uri === '') {
+        this.selectedVal = 'accueil';
     }
-    if(uri == 'livres') {
-        this.selectedVal ='livres';
+    if (uri === 'livres') {
+        this.selectedVal = 'livres';
     }
-    if(uri == 'reservations') {
-        this.selectedVal ='reservations';
+    if (uri === 'reservations') {
+        this.selectedVal = 'reservations';
     }
   }
 
-  public onValChange(val: string) {
+  public onValChange(val: string): void {
     this.selectedVal = val;
   }
 }

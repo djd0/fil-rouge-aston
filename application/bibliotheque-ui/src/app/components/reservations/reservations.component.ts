@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -8,15 +8,15 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 import { ShowReservationComponent } from './show-reservation/show-reservation.component';
 
-import { Reservation } from "../../model/Reservation";
-import { ReservationService } from "../../services/reservation.service";
+import { Reservation } from '../../model/Reservation';
+import { ReservationService } from '../../services/reservation.service';
 
 @Component({
   selector: 'app-reservations',
   templateUrl: './reservations.component.html',
   styleUrls: ['./reservations.component.css']
 })
-export class ReservationsComponent {
+export class ReservationsComponent implements OnInit {
 
   isLoadingResults = true;
   isRateLimitReached = false;
@@ -30,11 +30,11 @@ export class ReservationsComponent {
   reservations: Observable<Reservation[]>;
 
   constructor(private reservationService: ReservationService,
-              private router : Router,
+              private router: Router,
               private dialog: MatDialog) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
      this.reservations = this.getReservations(0, 10);
   }
 
@@ -53,11 +53,11 @@ export class ReservationsComponent {
      }));
   }
 
-  getPaginatorReservationsData(event: PageEvent) {
+  getPaginatorReservationsData(event: PageEvent): any {
     this.getReservationsEvent(event.pageIndex, event.pageSize);
   }
 
-  getReservationsEvent(pageIndex: number, pageSize: number) {
+  getReservationsEvent(pageIndex: number, pageSize: number): any {
 
       this.isLoadingResults = true;
 
@@ -83,19 +83,20 @@ export class ReservationsComponent {
                 );
   }
 
-  supprimerReservation(reservation: Reservation) {
-    if (confirm("Etes-vous sûr de vouloir supprimer les reservations selectionnées?"))
+  supprimerReservation(reservation: Reservation): any {
+    if (confirm('Etes-vous sûr de vouloir supprimer les reservations selectionnées?')) {
         this.reservationService.supprimerReservation(reservation.reference)
             .subscribe(
                 () => {
                     this.reservations = this.getReservations(this.paginator.pageIndex, this.paginator.pageSize);
             });
+    }
   }
 
   showReservation(reservation: any): void {
     const dialogRef = this.dialog.open(ShowReservationComponent, {
       width: '35%',
-      data: {reservation: reservation}
+      data: {reservation}
     });
 
     dialogRef.afterClosed()

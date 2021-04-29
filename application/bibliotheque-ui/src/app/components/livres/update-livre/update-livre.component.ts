@@ -15,7 +15,7 @@ import { LivreService } from '../../../services/livre.service';
 export class UpdateLivreComponent implements OnInit {
 
   constructor(private livreService: LivreService,
-              private router : Router,
+              private router: Router,
               private dialogRef: MatDialogRef<UpdateLivreComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
   }
@@ -28,7 +28,7 @@ export class UpdateLivreComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  updateLivre(livre: Livre) {
+  updateLivre(livre: Livre): any {
     this.livreService.updateLivre(livre).subscribe();
     this.onNoClick();
   }

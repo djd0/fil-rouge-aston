@@ -1,4 +1,4 @@
-import { Reservation } from "./Reservation"
+import { Reservation } from './Reservation';
 
 export class ReservationsPage {
 

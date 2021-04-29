@@ -118,8 +118,8 @@
     build:
       path: "{{ role_path }}/files/ui"
       args:
-        nexus_server: "{{ ansible_host }}"
-        version: angular-snapshots
+        nexus_server: "{{ nexus_host }}"
+        version: maven-snapshots
         env: preprod
     state: present
     source: build
@@ -167,8 +167,8 @@
     build:
       path: "{{ role_path }}/files/ui"
       args:
-        nexus_server: "{{ ansible_host }}"
-        version: angular-releases
+        nexus_server: "{{ nexus_host }}"
+        version: maven-releases
         env: prod
     state: present
     source: build

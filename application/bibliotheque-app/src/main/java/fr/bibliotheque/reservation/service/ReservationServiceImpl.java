@@ -2,12 +2,14 @@ package fr.bibliotheque.reservation.service;
 
 import fr.bibliotheque.reservation.constante.ReservationExceptionConstante;
 import fr.bibliotheque.reservation.dto.ReservationDTO;
+import fr.bibliotheque.reservation.exception.ReservationAlreadyExistsException;
 import fr.bibliotheque.reservation.exception.ReservationAlreadyInPrepareException;
 import fr.bibliotheque.reservation.exception.ReservationAlreadyValidateException;
 import fr.bibliotheque.reservation.exception.ReservationNotFoundException;
 import fr.bibliotheque.reservation.mapper.ReservationMapper;
 import fr.bibliotheque.reservation.model.Reservation;
 import fr.bibliotheque.reservation.repository.ReservationRepository;
+import fr.bibliotheque.reservation.validator.ReservationValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ public class ReservationServiceImpl implements IReservationService {
 
     private final ReservationRepository reservationRepository;
     private final ReservationMapper reservationMapper;
+    private final ReservationValidator reservationValidator;
 
 
     @Override
@@ -55,6 +58,13 @@ public class ReservationServiceImpl implements IReservationService {
         response.put("totalPages", pageReservations.getTotalPages());
 
         return response;
+    }
+
+    @Override
+    public void addReservation(ReservationDTO reservation) throws ReservationAlreadyExistsException {
+
+        reservationValidator.isReservationExists(reservation);
+        this.reservationRepository.save(reservationMapper.mapReservationDTOToReservation(reservation));
     }
 
     @Override
@@ -124,5 +134,11 @@ public class ReservationServiceImpl implements IReservationService {
         return this.reservationRepository
                 .save(reservationMapper.mapPrepareReservation(reservation))
                 .getReference();
+    }
+
+    @Override
+    public void deleteAll() {
+
+        this.reservationRepository.deleteAll();
     }
 }

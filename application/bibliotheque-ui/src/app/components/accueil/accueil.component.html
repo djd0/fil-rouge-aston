@@ -40,7 +40,8 @@
             <td mat-cell *matCellDef="let row">
               <div class="button-container">
                 <button matTooltip="Voir les détails" mat-mini-fab color="white" aria-label="Details"
-                        [routerLink]="['/reservations', row.reference]"
+                        onclick="this.blur()"
+                        (click)="showReservation(row)"
                         [matTooltipShowDelay]="500">
                   <mat-icon>search</mat-icon>
                 </button>
@@ -139,7 +140,8 @@
             <td mat-cell *matCellDef="let row">
               <div class="button-container">
                 <button matTooltip="Voir les détails" mat-mini-fab color="white" aria-label="Details"
-                        [routerLink]="['/livres', row.reference]"
+                        onclick="this.blur()"
+                        (click)="updateLivre(row)"
                         [matTooltipShowDelay]="500">
                   <mat-icon>search</mat-icon>
                 </button>

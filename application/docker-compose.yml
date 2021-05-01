@@ -8,8 +8,6 @@ services:
       context: ./bibliotheque-app
       args:
         maven_build_env: mvn -f pom.xml clean package
-    environment:
-      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
 
     container_name: bibliotheque-app-local
 

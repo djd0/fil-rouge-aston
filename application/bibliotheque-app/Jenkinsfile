@@ -7,16 +7,37 @@ pipeline {
         parallelsAlwaysFailFast()
     }
     stages {
-        stage('Maven Build') {
+        stage('Maven build preprod') {
+            when {
+                expression {
+                    env.BRANCH_NAME == 'master'
+                }
+            }
             steps {
                 sh "mvn -f pom.xml clean package"
                 archiveArtifacts artifacts: '**/*.jar', followSymlinks: false
             }
         }
+        stage('Maven build prod') {
+            when {
+                expression {
+                    env.BRANCH_NAME == 'production'
+                }
+            }
+            steps {
+                sh "mvn -f pom.xml clean package -DskipTests"
+                archiveArtifacts artifacts: '**/*.jar', followSymlinks: false
+            }
+        }
         stage('Sonar Analysis') {
+            when {
+                expression {
+                    env.BRANCH_NAME == 'master'
+                }
+            }
             steps {
                 withSonarQubeEnv('SonarQube') {
-                  sh "mvn -f pom.xml clean package sonar:sonar -Dsonar.host_url=$SONAR_HOST_URL "
+                  sh "mvn -f pom.xml clean package -DskipTests sonar:sonar -Dsonar.host_url=$SONAR_HOST_URL "
                 }
             }
         }
@@ -97,7 +118,8 @@ pipeline {
                                     vaultCredentialsId: 'AnsibleVault',
                                     inventory: '.inventory',
                                     playbook: 'playbook.yml',
-                                    tags: "loginDockerhub, buildAndPushPreprodAppNexusImage"
+                                    tags: "loginDockerhub, buildAndPushPreprodAppNexusImage",
+                                    limit: "localhost"
                                 )
             }
         }
@@ -112,7 +134,8 @@ pipeline {
                                     vaultCredentialsId: 'AnsibleVault',
                                     inventory: '.inventory',
                                     playbook: 'playbook.yml',
-                                    tags: "loginDockerhub, buildAndPushProdAppNexusImage"
+                                    tags: "loginDockerhub, buildAndPushProdAppNexusImage",
+                                    limit: "localhost"
                                 )
             }
         }
@@ -127,7 +150,8 @@ pipeline {
                                     vaultCredentialsId: 'AnsibleVault',
                                     inventory: '.inventory',
                                     playbook: 'playbook.yml',
-                                    tags: "loginDockerhub, copyBibliothequeAppDockerCompose, removeOldBibliothequeApp, pullPreprodAppImage, runBibliothequeAppImage"
+                                    tags: "loginDockerhub, RunAppImage",
+                                    limit: "devfilrouge"
                                 )
             }
         }
@@ -142,7 +166,8 @@ pipeline {
                                     vaultCredentialsId: 'AnsibleVault',
                                     inventory: '.inventory',
                                     playbook: 'playbook.yml',
-                                    tags: "loginDockerhub, copyBibliothequeAppDockerCompose, removeOldBibliothequeApp, pullProdAppImage, runBibliothequeAppImage"
+                                    tags: "loginDockerhub, RunAppImage",
+                                    limit: "prodfilrouge"
                                 )
             }
         }

@@ -37,9 +37,9 @@ public class ReservationMapper {
 
         return Reservation.builder()
                 .reference(dto.getReference())
-                .dateReservation(LocalDateTime.parse(dto.getDateReservation(), DateTimeFormatter.ofPattern(Common.DATE_FORMAT)))
+                .dateReservation(LocalDateTime.parse(dto.getDateReservation(), DateTimeFormatter.ofPattern(Common.DATE_TIME_FORMAT)))
                 .enPreparation(dto.isEnPreparation())
-                .dateRetrait(LocalDate.parse(dto.getDateRetrait(), DateTimeFormatter.ofPattern(Common.DATE_FORMAT)))
+                .dateRetrait((dto.getDateRetrait() == null) ? null : LocalDate.parse(dto.getDateRetrait(), DateTimeFormatter.ofPattern(Common.DATE_FORMAT)))
                 .livres(dto.getLivres())
                 .client(dto.getClient())
                 .build();

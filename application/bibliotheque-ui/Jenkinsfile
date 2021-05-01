@@ -13,6 +13,11 @@ pipeline {
             }
         }
         stage('Tests Analysis') {
+            when {
+                expression {
+                    env.BRANCH_NAME == 'master'
+                }
+            }
             steps {
                 sh "ng lint"
             }
@@ -156,7 +161,7 @@ pipeline {
                                     vaultCredentialsId: 'AnsibleVault',
                                     inventory: '.inventory',
                                     playbook: 'playbook.yml',
-                                    tags: "loginDockerhub, copyBibliothequeAppDockerCompose, removeOldBibliothequeApp, pullPreprodAppImage, runBibliothequeAppImage",
+                                    tags: "loginDockerhub, runUiImage",
                                     limit: "devfilrouge"
                                 )
             }
@@ -172,7 +177,7 @@ pipeline {
                                     vaultCredentialsId: 'AnsibleVault',
                                     inventory: '.inventory',
                                     playbook: 'playbook.yml',
-                                    tags: "loginDockerhub, copyBibliothequeAppDockerCompose, removeOldBibliothequeApp, pullProdUiImage, runBibliothequeAppImage",
+                                    tags: "loginDockerhub, runUiImage",
                                     limit: "prodfilrouge"
                                 )
             }

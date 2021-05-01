@@ -61,10 +61,10 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public void addReservation(ReservationDTO reservation) throws ReservationAlreadyExistsException {
+    public long addReservation(ReservationDTO reservation) throws ReservationAlreadyExistsException {
 
         reservationValidator.isReservationExists(reservation);
-        this.reservationRepository.save(reservationMapper.mapReservationDTOToReservation(reservation));
+        return this.reservationRepository.save(reservationMapper.mapReservationDTOToReservation(reservation)).getReference();
     }
 
     @Override

@@ -54,7 +54,7 @@
     build:
       path: /home/{{ ansible_ssh_user }}/Bureau/WorkSpace/fil-rouge-aston/application/bibliotheque-app
       args:
-        maven_build_env: mvn -f pom.xml clean package -Pprod
+        maven_build_env: mvn -f pom.xml clean package -Pprod -DskipTests
     state: present
     source: build
     name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-app-prod
@@ -213,7 +213,25 @@
     restart_policy: always
   when: inventory_hostname in groups.filrougeservers
   tags:
-    - RunPostgresImage
+    - runPostgresImage
+    - freshInstallApplication
+
+# RUN POSTGRES TEST IMAGE
+- name: Run postgres test image
+  docker_container:
+    detach: yes
+    image: postgres:13.2-alpine
+    name: bibliotheque-postgres-tests
+    env:
+      POSTGRES_DB: "bibliotheque"
+      POSTGRES_USER: "groupe2ws"
+      POSTGRES_PASSWORD: "12345"
+    published_ports:
+      - 5433:5432
+    restart_policy: always
+  when: inventory_hostname == "devfilrouge"
+  tags:
+    - runPostgresTestImage
     - freshInstallApplication
 
 # RUN APP IMAGE
@@ -232,7 +250,7 @@
     restart_policy: always
   when: inventory_hostname in groups.filrougeservers
   tags:
-    - RunAppImage
+    - runAppImage
     - freshInstallApplication
 
 # RUN UI IMAGE

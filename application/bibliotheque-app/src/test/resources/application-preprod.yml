@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://158.69.21.143:5433/bibliotheque
+    username: groupe2ws
+    password: 12345
+  # JPA properties
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 8443
+  error:
+    include-message: always
+    include-stacktrace: never
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    fr.bibliotheque: DEBUG

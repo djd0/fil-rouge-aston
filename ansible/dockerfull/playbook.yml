@@ -17,6 +17,7 @@
     - { role: dokuwiki, when: inventory_hostname == "devfilrouge" }
     - { role: bibliothequeapplication }
     - { role: filebeat }
+    - { role: portainer }
 
 - hosts: elk1
   roles:
@@ -24,6 +25,7 @@
     - { role: usersfilrouge }
     - { role: docker }
     - { role: elk }
+    - { role: portainer }
 
 - hosts: jenkins
   roles:
@@ -31,4 +33,5 @@
     - { role: usersfilrouge }
     - { role: docker }
     - { role: jenkins }
-#    - { role: bibliothequeapplication }
+    - { role: portainer }
+    - { role: bibliothequeapplication }

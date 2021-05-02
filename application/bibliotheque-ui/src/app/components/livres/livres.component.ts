@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -17,7 +17,7 @@ import { LivreService } from '../../services/livre.service';
   templateUrl: './livres.component.html',
   styleUrls: ['./livres.component.css']
 })
-export class LivresComponent {
+export class LivresComponent implements OnInit {
 
   isLoadingResults = true;
   isRateLimitReached = false;
@@ -31,11 +31,11 @@ export class LivresComponent {
   livres: Observable<Livre[]>;
 
   constructor(private livreService: LivreService,
-              private router : Router,
+              private router: Router,
               private dialog: MatDialog) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
      this.livres = this.getLivres(0, 10);
   }
 
@@ -54,11 +54,11 @@ export class LivresComponent {
      }));
   }
 
-  getPaginatorLivresData(event: PageEvent) {
+  getPaginatorLivresData(event: PageEvent): any {
     this.getLivresEvent(event.pageIndex, event.pageSize);
   }
 
-  getLivresEvent(pageIndex: number, pageSize: number) {
+  getLivresEvent(pageIndex: number, pageSize: number): any {
 
       this.isLoadingResults = true;
 
@@ -84,13 +84,14 @@ export class LivresComponent {
                 );
   }
 
-  deleteLivre(reference: number) {
-    if (confirm("Etes-vous sûr de vouloir supprimer ce livre?"))
+  deleteLivre(reference: number): any {
+    if (confirm('Etes-vous sûr de vouloir supprimer ce livre?')) {
         this.livreService.deleteLivre(reference)
             .subscribe(
                 () => {
                     this.livres = this.getLivres(this.paginator.pageIndex, this.paginator.pageSize);
             });
+    }
   }
 
   addLivre(): void {
@@ -108,7 +109,7 @@ export class LivresComponent {
   updateLivre(livre: any): void {
     const dialogRef = this.dialog.open(UpdateLivreComponent, {
       width: '25%',
-      data: {livre: livre}
+      data: {livre}
     });
 
     dialogRef.afterClosed()

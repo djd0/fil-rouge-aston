@@ -43,3 +43,12 @@ all:
           ansible_ssh_user: "{{ ansible_ssh_user }}"
           ansible_ssh_password: "{{ ansible_ssh_password }}"
           ansible_sudo_pass: "{{ ansible_sudo_pass }}"
+
+    jenkins:
+      hosts:
+
+        jenkins1:
+          ansible_host: "{{ ansible_host }}"
+          ansible_ssh_user: "{{ ansible_ssh_user }}"
+          ansible_ssh_password: "{{ ansible_ssh_password }}"
+          ansible_sudo_pass: "{{ ansible_sudo_pass }}"

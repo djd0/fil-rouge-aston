@@ -1,9 +1,12 @@
 package fr.bibliotheque.reservation.validator;
 
 import fr.bibliotheque.reservation.constante.ReservationExceptionConstante;
+import fr.bibliotheque.reservation.dto.ReservationDTO;
+import fr.bibliotheque.reservation.exception.ReservationAlreadyExistsException;
 import fr.bibliotheque.reservation.exception.ReservationNotFoundException;
 import fr.bibliotheque.reservation.exception.ReservationValidationException;
-import fr.bibliotheque.reservation.service.IReservationService;
+import fr.bibliotheque.reservation.model.Reservation;
+import fr.bibliotheque.reservation.repository.ReservationRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,7 @@ import java.time.format.ResolverStyle;
 @Component
 public class ReservationValidator {
 
-    private final IReservationService reservationService;
+    private final ReservationRepository reservationRepository;
 
 
     public void validateReservationValidatingDate(long reference, String validatingDate) throws ReservationNotFoundException, ReservationValidationException {
@@ -39,5 +42,19 @@ public class ReservationValidator {
             throw new ReservationValidationException(String.format(ReservationExceptionConstante.RESERVATION_BAD_VALIDATING_DATE, validatingDate, reference), e);
         }
         log.debug("Validate reservation validation date [end]");
+    }
+
+    public void isReservationExists(ReservationDTO dto) throws ReservationAlreadyExistsException {
+
+        log.debug("Checking if reservation already exists [start]");
+
+        Reservation reservation = this.reservationRepository.findById(dto.getReference()).orElse(null);
+
+        if(reservation != null) {
+            log.error(String.format(ReservationExceptionConstante.RESERVATION_ALREADY_EXISTS, dto.getReference()));
+            throw new ReservationAlreadyExistsException(String.format(ReservationExceptionConstante.RESERVATION_ALREADY_EXISTS, dto.getReference()));
+        }
+
+        log.debug("Checking if reservation already exists [end]");
     }
 }

@@ -1,4 +1,4 @@
-import { Livre } from "./Livre"
+import { Livre } from './Livre';
 
 export class LivresPage {
 

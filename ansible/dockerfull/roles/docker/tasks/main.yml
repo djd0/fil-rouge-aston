@@ -99,6 +99,7 @@
 - name: reset ssh connection
   meta: reset_connection
   tags:
+    - loginDockerhub
     - freshInstallDocker
 
 # LOG IN DOCKERHUB

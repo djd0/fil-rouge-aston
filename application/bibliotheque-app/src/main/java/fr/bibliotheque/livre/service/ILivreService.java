@@ -26,4 +26,6 @@ public interface ILivreService {
     long validateCommande(long reference) throws LivreNotFoundException, LivreCommandeAlreadyValidateException;
 
     long prepareCommande(long reference) throws LivreNotFoundException, LivreAlreadyInPrepareException;
+
+    void deleteAll();
 }

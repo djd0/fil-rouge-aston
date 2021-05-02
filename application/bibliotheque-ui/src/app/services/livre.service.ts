@@ -17,13 +17,13 @@ const httpOptions = {
 
 export class LivreService {
 
-  apiURL: string = environment.apiUrl+'/livres';
+  apiURL: string = environment.apiUrl + '/livres';
   livres: Livre[];
 
-  constructor(private http :HttpClient) {
+  constructor(private http: HttpClient) {
   }
 
-  handleError(error: HttpErrorResponse) {
+  handleError(error: HttpErrorResponse): any {
     let errorMessage = 'Unknown error!';
     if (error.error instanceof ErrorEvent) {
       // Client-side errors
@@ -42,22 +42,22 @@ export class LivreService {
     return this.http.get<LivresPage>(requestUrl);
   }
 
-  addLivre(livre: Livre): Observable<Livre> {
+  addLivre(livre: Livre): any {
     return this.http.post<Livre>(this.apiURL, livre, httpOptions).pipe(catchError(this.handleError));
   }
 
-  deleteLivre(reference: number) {
+  deleteLivre(reference: number): any {
     const url = `${this.apiURL}/${reference}`;
     return this.http.delete(url, httpOptions).pipe(catchError(this.handleError));
   }
 
-  getLivre(reference: number): Observable<Livre> {
+  getLivre(reference: number): any {
     const url = `${this.apiURL}/${reference}`;
     return this.http.get<Livre>(url).pipe(catchError(this.handleError));
   }
 
-  updateLivre(livre: Livre) {
-    return this.http.put<Livre>(this.apiURL+"/"+livre.reference, livre, httpOptions).pipe(catchError(this.handleError));
+  updateLivre(livre: Livre): any {
+    return this.http.put<Livre>(this.apiURL + '/' + livre.reference, livre, httpOptions).pipe(catchError(this.handleError));
   }
 
   getUrgentLivres(page: number, size: number): Observable<LivresPage> {
@@ -66,13 +66,13 @@ export class LivreService {
     return this.http.get<LivresPage>(requestUrl);
   }
 
-  preparationCommande(reference: number) {
-    const href = `${this.apiURL}/prepare/${reference}`
+  preparationCommande(reference: number): any {
+    const href = `${this.apiURL}/prepare/${reference}`;
     return this.http.patch(href, httpOptions).pipe(catchError(this.handleError));
   }
 
-  validateCommande(reference: number) {
-    const href = `${this.apiURL}/validate/${reference}`
+  validateCommande(reference: number): any {
+    const href = `${this.apiURL}/validate/${reference}`;
     return this.http.patch(href, httpOptions).pipe(catchError(this.handleError));
   }
 }

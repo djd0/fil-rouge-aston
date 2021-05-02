@@ -1,0 +1,34 @@
+---
+
+# RUN PORTAINER-CE IMAGE
+- name: Run portainer-ce image
+  docker_container:
+    detach: yes
+    image: portainer/portainer-ce:alpine
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    name: portainer
+    published_ports:
+      - 8000:8000
+      - 9001:9000
+    restart_policy: always
+  when: inventory_hostname in groups.jenkins
+  tags:
+    - RunPortainerImage
+
+# RUN PORTAINER-AGENT IMAGE
+- name: Run portainer-agent image
+  docker_container:
+    detach: yes
+    image: portainer/agent:linux-amd64-2.4.0-alpine
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+    name: portainer_agent
+    published_ports:
+      - 9002:9001
+    restart_policy: always
+  when: inventory_hostname != "localhost"
+  tags:
+    - RunPortainerAgentImage

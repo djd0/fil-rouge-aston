@@ -1,0 +1,43 @@
+---
+
+# COPY DOCKER-COMPOSE
+- name: Copy docker-compose
+  copy:
+    src: docker-compose.yml
+    dest: /home/{{ ansible_ssh_user }}/prometheus/
+  when: inventory_hostname != "localhost"
+  tags:
+    - copyPrometheusDockerCompose
+    - freshInstallPrometheus
+
+# COPY PROMETHEUS CONFIG
+- name: Copy prometheus config file
+  copy:
+    src: prometheus.yml
+    dest: /home/{{ ansible_ssh_user }}/prometheus/config/
+  when: inventory_hostname != "localhost"
+  tags:
+    - copyPrometheusConfig
+    - freshInstallPrometheus
+
+# REMOVE EXISTING PROMETHEUS
+- name: Remove existing prometheus
+  docker_compose:
+    project_src: /home/{{ ansible_ssh_user }}/prometheus/
+    state: absent
+    remove_images: all
+  when: inventory_hostname != "localhost"
+  tags:
+    - reloadPrometheus
+    - removeOldPrometheus
+    - freshInstallPrometheus
+
+# RUN PROMETHEUS IMAGES
+- name: Run prometheus image
+  docker_compose:
+    project_src: /home/{{ ansible_ssh_user }}/prometheus
+  when: inventory_hostname != "localhost"
+  tags:
+    - reloadPrometheus
+    - runPrometheusImages
+    - freshInstallPrometheus

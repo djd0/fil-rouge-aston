@@ -1,6 +1,6 @@
 .reservations {
   position: absolute;
-  top: 200px;
+  top: 150px;
   left: 0;
   bottom: 125px;
   right: 0;
@@ -125,4 +125,23 @@ table {
 
 .mat-supprimer {
     background-color: #f44336;
+}
+
+.filter {
+  display: flex;
+  height: 55px;
+}
+
+.form-field-filter-value {
+  height: 29px;
+  margin-left: 15px;
+}
+
+.label-filter-value {
+  margin-left: 15px;
+}
+
+.filter-button {
+  margin-left: 10px;
+  margin-top: 8px;
 }

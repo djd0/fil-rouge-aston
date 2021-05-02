@@ -80,4 +80,10 @@ export class ReservationService {
 
     return this.http.patch(href, mySimpleFormat, httpOptions).pipe(catchError(this.handleError));
   }
+
+  getReservationsWithFilter(page: number, size: number, selectedValue: string, filterValue: string): Observable<ReservationsPage> {
+    const href = `${this.apiURL}/search`;
+    const requestUrl = `${href}?filter=${selectedValue}&value=${filterValue}&page=${page}&size=${size}`;
+    return this.http.get<ReservationsPage>(requestUrl);
+  }
 }

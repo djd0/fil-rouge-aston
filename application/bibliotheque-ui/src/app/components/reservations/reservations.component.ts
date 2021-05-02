@@ -11,6 +11,11 @@ import { ShowReservationComponent } from './show-reservation/show-reservation.co
 import { Reservation } from '../../model/Reservation';
 import { ReservationService } from '../../services/reservation.service';
 
+interface Filtre {
+  value: string;
+  viewValue: string;
+}
+
 @Component({
   selector: 'app-reservations',
   templateUrl: './reservations.component.html',
@@ -22,6 +27,13 @@ export class ReservationsComponent implements OnInit {
   isRateLimitReached = false;
   resultsLength = 5;
   currentPage = 0;
+  selectedValue: string;
+  filterValue: string;
+
+  filtres: Filtre[] = [
+    {value: 'reference', viewValue: 'reference'},
+    {value: 'nom', viewValue: 'nom'}
+  ];
 
   displayedColumnsReservations: string[] = ['reference', 'name', 'prenom', 'telephone', 'email', 'dateReservation', 'details', 'supprimer'];
 
@@ -101,5 +113,15 @@ export class ReservationsComponent implements OnInit {
 
     dialogRef.afterClosed()
         .subscribe();
+  }
+
+  applyFilter() {
+    this.reservations = this.reservationService.getReservationsWithFilter(this.paginator.pageIndex, this.paginator.pageSize, this.selectedValue, this.filterValue)
+        .pipe(map(data => {
+                           this.isLoadingResults = false;
+                           this.resultsLength = data.totalItems;
+                           this.currentPage = data.currentPage;
+                           return data.reservations;
+    }));
   }
 }

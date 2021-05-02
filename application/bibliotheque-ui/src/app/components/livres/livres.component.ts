@@ -12,6 +12,11 @@ import { UpdateLivreComponent } from './update-livre/update-livre.component';
 import { Livre } from '../../model/Livre';
 import { LivreService } from '../../services/livre.service';
 
+interface Filtre {
+  value: string;
+  viewValue: string;
+}
+
 @Component({
   selector: 'app-livres',
   templateUrl: './livres.component.html',
@@ -23,6 +28,15 @@ export class LivresComponent implements OnInit {
   isRateLimitReached = false;
   resultsLength = 5;
   currentPage = 0;
+  selectedValue: string;
+  filterValue: string;
+
+  filtres: Filtre[] = [
+    {value: 'reference', viewValue: 'reference'},
+    {value: 'titre', viewValue: 'titre'},
+    {value: 'auteur', viewValue: 'auteur'},
+    {value: 'genre', viewValue: 'genre'}
+  ];
 
   displayedColumnsLivres: string[] = ['reference', 'auteur', 'titre', 'genre', 'quantite', 'details', 'supprimer'];
 
@@ -117,5 +131,15 @@ export class LivresComponent implements OnInit {
             () => {
                 this.livres = this.getLivres(this.paginator.pageIndex, this.paginator.pageSize);
         });
+  }
+
+  applyFilter() {
+    this.livres = this.livreService.getLivresWithFilter(this.paginator.pageIndex, this.paginator.pageSize, this.selectedValue, this.filterValue)
+        .pipe(map(data => {
+                           this.isLoadingResults = false;
+                           this.resultsLength = data.totalItems;
+                           this.currentPage = data.currentPage;
+                           return data.livres;
+    }));
   }
 }

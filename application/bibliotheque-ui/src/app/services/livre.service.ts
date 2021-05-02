@@ -75,4 +75,10 @@ export class LivreService {
     const href = `${this.apiURL}/validate/${reference}`;
     return this.http.patch(href, httpOptions).pipe(catchError(this.handleError));
   }
+
+  getLivresWithFilter(page: number, size: number, selectedValue: string, filterValue: string): Observable<LivresPage> {
+    const href = `${this.apiURL}/search`;
+    const requestUrl = `${href}?filter=${selectedValue}&value=${filterValue}&page=${page}&size=${size}`;
+    return this.http.get<LivresPage>(requestUrl);
+  }
 }

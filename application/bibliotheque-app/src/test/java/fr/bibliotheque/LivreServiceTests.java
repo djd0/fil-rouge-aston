@@ -228,4 +228,65 @@ class LivreServiceTests {
         reservationService.deleteAll();
         livreService.deleteAll();
     }
+
+    @Test
+    void livreIsNotFound() {
+        assertThrows(LivreNotFoundException.class, () -> {
+            LivreDTO livre = LivreDTO.builder()
+                    .reference(1)
+                    .titre("test1")
+                    .auteur("test1")
+                    .build();
+
+            livreService.updateLivre(livre.getReference(), livre);
+        });
+
+        assertThrows(LivreNotFoundException.class, () -> {
+            LivreDTO livre = LivreDTO.builder()
+                    .reference(1)
+                    .titre("test1")
+                    .auteur("test1")
+                    .build();
+
+            livreService.deleteLivre(livre.getReference());
+        });
+    }
+
+    @Test
+    void livreCommandeAlreadyValidate() {
+
+        assertThrows(LivreCommandeAlreadyValidateException.class, () -> {
+
+            LivreDTO livre = LivreDTO.builder()
+                    .reference(1)
+                    .titre("test")
+                    .auteur("test")
+                    .commandeEnCours(true)
+                    .build();
+
+            long id = livreService.addLivre(livre);
+            livreService.validateCommande(id);
+            reservationService.deleteAll();
+            livreService.deleteAll();
+        });
+    }
+
+    @Test
+    void livreAlreadyInPrepare() {
+
+        assertThrows(LivreAlreadyInPrepareException.class, () -> {
+
+            LivreDTO livre = LivreDTO.builder()
+                    .reference(1)
+                    .titre("test")
+                    .auteur("test")
+                    .enPreparation(true)
+                    .build();
+
+            long id = livreService.addLivre(livre);
+            livreService.prepareCommande(id);
+        });
+        reservationService.deleteAll();
+        livreService.deleteAll();
+    }
 }

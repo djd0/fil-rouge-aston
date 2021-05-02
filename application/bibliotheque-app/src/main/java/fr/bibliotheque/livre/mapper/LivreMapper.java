@@ -21,6 +21,8 @@ public class LivreMapper {
                 .titre(dto.getTitre())
                 .quantite(dto.getQuantite())
                 .nombreDemandes(dto.getNombreDemandes())
+                .enPreparation(dto.isEnPreparation())
+                .commandeEnCours(dto.isCommandeEnCours())
                 .build();
     }
 

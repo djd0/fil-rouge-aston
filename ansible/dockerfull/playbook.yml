@@ -3,23 +3,32 @@
 - hosts: local
   roles:
     - { role: docker }
-#    - { role: dokuwiki }
+    - { role: dokuwiki }
     - { role: bibliothequeapplication }
-#    - { role: elk }
-#    - { role: filebeat }
+    - { role: elk }
+    - { role: filebeat }
+    - { role: jenkins }
 
 - hosts: filrougeservers
   roles:
-#    - { role: common }
-#    - { role: usersfilrouge }
+    - { role: common }
+    - { role: usersfilrouge }
     - { role: docker }
-#    - { role: dokuwiki, when: inventory_hostname == "devfilrouge" }
+    - { role: dokuwiki, when: inventory_hostname == "devfilrouge" }
     - { role: bibliothequeapplication }
-#    - { role: filebeat }
+    - { role: filebeat }
 
-#- hosts: elk1
-#  roles:
-#    - { role: common }
-#    - { role: usersfilrouge }
-#    - { role: docker }
-#    - { role: elk }
+- hosts: elk1
+  roles:
+    - { role: common }
+    - { role: usersfilrouge }
+    - { role: docker }
+    - { role: elk }
+
+- hosts: jenkins
+  roles:
+    - { role: common }
+    - { role: usersfilrouge }
+    - { role: docker }
+    - { role: jenkins }
+#    - { role: bibliothequeapplication }

@@ -113,7 +113,7 @@ public class LivreServiceImpl implements ILivreService {
     }
 
     @Override
-    public long validateCommande(long reference)  throws LivreNotFoundException, LivreCommandeAlreadyValidateException {
+    public long validateCommande(long reference) throws LivreNotFoundException, LivreCommandeAlreadyValidateException {
 
         Livre livre = this.livreRepository.findByReference(reference)
                 .orElseThrow(LivreNotFoundException::new);
@@ -144,5 +144,11 @@ public class LivreServiceImpl implements ILivreService {
         return this.livreRepository
                 .save(livreMapper.mapPrepareCommande(livre))
                 .getReference();
+    }
+
+    @Override
+    public void deleteAll() {
+
+        livreRepository.deleteAll();
     }
 }

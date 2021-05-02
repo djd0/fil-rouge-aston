@@ -17,7 +17,7 @@ export class AddLivreComponent implements OnInit {
   livre = new Livre();
 
   constructor(private livreService: LivreService,
-              private router : Router,
+              private router: Router,
               private dialogRef: MatDialogRef<AddLivreComponent>) {
   }
 
@@ -28,7 +28,7 @@ export class AddLivreComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  addLivre(livre: Livre) {
+  addLivre(livre: Livre): void {
     this.livreService.addLivre(livre).subscribe();
     this.onNoClick();
   }

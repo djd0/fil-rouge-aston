@@ -24,7 +24,7 @@ import { LivresComponent } from './components/livres/livres.component';
 import { AddLivreComponent } from './components/livres/add-livre/add-livre.component';
 import { UpdateLivreComponent } from './components/livres/update-livre/update-livre.component';
 import { ReservationsComponent } from './components/reservations/reservations.component';
-import { ShowReservationComponent }  from './components/reservations/show-reservation/show-reservation.component';
+import { ShowReservationComponent } from './components/reservations/show-reservation/show-reservation.component';
 
 
 

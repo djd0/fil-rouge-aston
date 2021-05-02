@@ -18,13 +18,13 @@ const httpOptions = {
 
 export class ReservationService {
 
-  apiURL: string = environment.apiUrl+'/reservations';
+  apiURL: string = environment.apiUrl + '/reservations';
   reservations: Reservation[];
 
-  constructor(private http :HttpClient) {
+  constructor(private http: HttpClient) {
   }
 
-  handleError(error: HttpErrorResponse) {
+  handleError(error: HttpErrorResponse): any {
     let errorMessage = 'Unknown error!';
     if (error.error instanceof ErrorEvent) {
       // Client-side errors
@@ -43,11 +43,11 @@ export class ReservationService {
     return this.http.get<ReservationsPage>(requestUrl);
   }
 
-  ajouterReservation(reservation: Reservation):Observable<Reservation> {
+  ajouterReservation(reservation: Reservation): Observable<Reservation> {
     return this.http.post<Reservation>(this.apiURL, reservation, httpOptions);
   }
 
-  supprimerReservation(ref : number) {
+  supprimerReservation(ref: number): any {
     const url = `${this.apiURL}/${ref}`;
     return this.http.delete(url, httpOptions);
   }
@@ -57,8 +57,8 @@ export class ReservationService {
       return this.http.get<Reservation>(url);
   }
 
-  updateReservation(reservation : Reservation) : Observable<Reservation> {
-    return this.http.put<Reservation>(this.apiURL+"/"+reservation.reference, reservation, httpOptions);
+  updateReservation(reservation: Reservation): Observable<Reservation> {
+    return this.http.put<Reservation>(this.apiURL + '/' + reservation.reference, reservation, httpOptions);
   }
 
   getUrgentReservations(page: number, size: number): Observable<ReservationsPage> {
@@ -67,16 +67,16 @@ export class ReservationService {
     return this.http.get<ReservationsPage>(requestUrl);
   }
 
-  preparationReservation(reference: number) {
-    const href = `${this.apiURL}/prepare/${reference}`
+  preparationReservation(reference: number): any {
+    const href = `${this.apiURL}/prepare/${reference}`;
     return this.http.patch(href, httpOptions).pipe(catchError(this.handleError));
   }
 
-  validateReservation(reference: number) {
-    const href = `${this.apiURL}/validate/${reference}`
-    let pipe = new DatePipe('en-US');
-    let now = Date.now();
-    let mySimpleFormat = pipe.transform(now, 'dd/MM/yyyy');
+  validateReservation(reference: number): any {
+    const href = `${this.apiURL}/validate/${reference}`;
+    const pipe = new DatePipe('en-US');
+    const now = Date.now();
+    const mySimpleFormat = pipe.transform(now, 'dd/MM/yyyy');
 
     return this.http.patch(href, mySimpleFormat, httpOptions).pipe(catchError(this.handleError));
   }

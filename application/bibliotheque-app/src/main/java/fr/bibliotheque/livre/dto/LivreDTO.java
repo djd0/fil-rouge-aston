@@ -12,6 +12,9 @@ import javax.validation.constraints.NotBlank;
 public class LivreDTO {
 
     @NotBlank
+    private long reference;
+
+    @NotBlank
     private String titre;
 
     private String genre;

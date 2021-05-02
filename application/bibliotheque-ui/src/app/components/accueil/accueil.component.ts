@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
@@ -7,15 +7,15 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 import { Livre } from '../../model/Livre';
 import { LivreService } from '../../services/livre.service';
-import { Reservation } from "../../model/Reservation";
-import { ReservationService } from "../../services/reservation.service";
+import { Reservation } from '../../model/Reservation';
+import { ReservationService } from '../../services/reservation.service';
 
 @Component({
   selector: 'app-accueil',
   templateUrl: './accueil.component.html',
   styleUrls: ['./accueil.component.css']
 })
-export class AccueilComponent {
+export class AccueilComponent  implements OnInit {
 
   isLoadingResultsReservations = true;
   isRateLimitReachedReservations = false;
@@ -36,10 +36,10 @@ export class AccueilComponent {
 
   constructor(private livreService: LivreService,
               private reservationService: ReservationService,
-              private router : Router) {
+              private router: Router) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
      this.reservations = this.getReservations(0, 10);
      this.livres = this.getLivres(0, 10);
   }
@@ -70,15 +70,15 @@ export class AccueilComponent {
      }));
   }
 
-  getPaginatorReservationsData(event: PageEvent) {
+  getPaginatorReservationsData(event: PageEvent): any {
     this.getDailyReservations(event.pageIndex, event.pageSize);
   }
 
-  getPaginatorLivresData(event: PageEvent) {
+  getPaginatorLivresData(event: PageEvent): any {
     this.getLivresACommander(event.pageIndex, event.pageSize);
   }
 
-  getDailyReservations(pageIndex: number, pageSize: number) {
+  getDailyReservations(pageIndex: number, pageSize: number): any {
 
       this.isLoadingResultsReservations = true;
 
@@ -104,7 +104,7 @@ export class AccueilComponent {
                 );
   }
 
-  getLivresACommander(pageIndex: number, pageSize: number) {
+  getLivresACommander(pageIndex: number, pageSize: number): any {
 
       this.isLoadingResultsCommandes = true;
 
@@ -130,9 +130,9 @@ export class AccueilComponent {
                 );
   }
 
-  preparationReservation(reference: number) {
+  preparationReservation(reference: number): any {
 
-    if (confirm("Etes-vous sûr de vouloir mettre la reservation en preparation?")) {
+    if (confirm('Etes-vous sûr de vouloir mettre la reservation en preparation?')) {
       this.reservationService.preparationReservation(reference)
               .subscribe(
                   () => {
@@ -141,9 +141,9 @@ export class AccueilComponent {
     }
   }
 
-  preparationCommande(reference: number) {
+  preparationCommande(reference: number): any {
 
-    if (confirm("Etes-vous sûr de vouloir mettre la commande en preparation?")) {
+    if (confirm('Etes-vous sûr de vouloir mettre la commande en preparation?')) {
       this.livreService.preparationCommande(reference)
               .subscribe(
                   () => {
@@ -152,8 +152,8 @@ export class AccueilComponent {
     }
   }
 
-  validateReservation(reference: number) {
-    if (confirm("Etes-vous sûr de vouloir valider la reservation?")) {
+  validateReservation(reference: number): any {
+    if (confirm('Etes-vous sûr de vouloir valider la reservation?')) {
       this.reservationService.validateReservation(reference)
               .subscribe(
                   () => {
@@ -162,8 +162,8 @@ export class AccueilComponent {
     }
   }
 
-  validateCommande(reference: number) {
-    if (confirm("Etes-vous sûr de vouloir valider la commande?")) {
+  validateCommande(reference: number): any {
+    if (confirm('Etes-vous sûr de vouloir valider la commande?')) {
       this.livreService.validateCommande(reference)
               .subscribe(
                   () => {

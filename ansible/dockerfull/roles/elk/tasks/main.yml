@@ -142,6 +142,7 @@
     value: '262144'
     state: present
     sysctl_set: yes
+    reload: yes
   become: yes
   when: inventory_hostname in groups.elkservers
   tags:

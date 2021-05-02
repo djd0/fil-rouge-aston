@@ -37,7 +37,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv('SonarQube') {
-                  sh "mvn -f pom.xml clean package -DskipTests sonar:sonar -Dsonar.host_url=$SONAR_HOST_URL "
+                  sh "mvn -f pom.xml clean package sonar:sonar -Dsonar.host_url=$SONAR_HOST_URL "
                 }
             }
         }

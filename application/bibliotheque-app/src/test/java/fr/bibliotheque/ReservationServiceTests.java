@@ -353,4 +353,111 @@ class ReservationServiceTests {
         reservationService.deleteAll();
         livreService.deleteAll();
     }
+
+
+    @Test
+    void reservationIsNotFound() {
+
+        assertThrows(ReservationNotFoundException.class, () -> {
+
+            List<Livre> livres = new ArrayList<>();
+            livres.add(Livre.builder()
+                    .reference(1)
+                    .titre("test")
+                    .auteur("test")
+                    .build()
+            );
+
+            Client client = Client.builder()
+                    .reference(1)
+                    .nom("Jean")
+                    .prenom("Claude")
+                    .numeroTel("0123456789")
+                    .email("jean@claude.fr")
+                    .build();
+
+            ReservationDTO reservation = ReservationDTO.builder()
+                    .reference(1)
+                    .dateReservation(reservationMapper.dateTimeToString(LocalDateTime.now()))
+                    .enPreparation(false)
+                    .livres(livres)
+                    .client(client)
+                    .build();
+
+            reservationService.deleteReservation(reservation.getReference());
+        });
+    }
+
+    @Test
+    void reservationAlreadyValidate() {
+
+        assertThrows(ReservationAlreadyValidateException.class, () -> {
+
+            List<Livre> livres = new ArrayList<>();
+            livres.add(Livre.builder()
+                    .reference(1)
+                    .titre("test")
+                    .auteur("test")
+                    .build()
+            );
+
+            Client client = Client.builder()
+                    .reference(1)
+                    .nom("Jean")
+                    .prenom("Claude")
+                    .numeroTel("0123456789")
+                    .email("jean@claude.fr")
+                    .build();
+
+            ReservationDTO reservation = ReservationDTO.builder()
+                    .reference(1)
+                    .dateReservation(reservationMapper.dateTimeToString(LocalDateTime.now()))
+                    .enPreparation(false)
+                    .dateRetrait("01/01/2021")
+                    .livres(livres)
+                    .client(client)
+                    .build();
+
+            long id = reservationService.addReservation(reservation);
+            reservationService.validateReservation(id, "01/01/2021");
+        });
+        reservationService.deleteAll();
+        livreService.deleteAll();
+    }
+
+    @Test
+    void reservationAlreadyInPrepare() {
+
+        assertThrows(ReservationAlreadyInPrepareException.class, () -> {
+
+            List<Livre> livres = new ArrayList<>();
+            livres.add(Livre.builder()
+                    .reference(1)
+                    .titre("test")
+                    .auteur("test")
+                    .build()
+            );
+
+            Client client = Client.builder()
+                    .reference(1)
+                    .nom("Jean")
+                    .prenom("Claude")
+                    .numeroTel("0123456789")
+                    .email("jean@claude.fr")
+                    .build();
+
+            ReservationDTO reservation = ReservationDTO.builder()
+                    .reference(1)
+                    .dateReservation(reservationMapper.dateTimeToString(LocalDateTime.now()))
+                    .enPreparation(true)
+                    .livres(livres)
+                    .client(client)
+                    .build();
+
+            long id = reservationService.addReservation(reservation);
+            reservationService.prepareReservation(id);
+        });
+        reservationService.deleteAll();
+        livreService.deleteAll();
+    }
 }

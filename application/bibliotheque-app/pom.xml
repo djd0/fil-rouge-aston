@@ -6,12 +6,36 @@
 
     <groupId>fr.bibliotheque</groupId>
     <artifactId>bibliotheque-services</artifactId>
-    <version>3.1.2-SNAPSHOT</version>
+    <version>3.1.4-SNAPSHOT</version>
 
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.jacoco.xmlReportPaths>
+        <sonar.coverage.exclusions>
+            **/client/**/*,
+            **/reservation/constante/*,
+            **/BibliothequeApplication.*,
+            **/reservation/controller/*,
+            **/reservation/dto/*,
+            **/reservation/exception/*,
+            **/reservation/mapper/*,
+            **/reservation/model/*,
+            **/reservation/repository/*,
+            **/reservation/validator/*,
+            **/livre/constante/*,
+            **/livre/controller/*,
+            **/livre/dto/*,
+            **/livre/exception/*,
+            **/livre/mapper/*,
+            **/livre/model/*,
+            **/livre/repository/*,
+            **/livre/validator/*
+        </sonar.coverage.exclusions>
+        <sonar.language>java</sonar.language>
     </properties>
 
     <parent>
@@ -94,6 +118,55 @@
                 <configuration>
                     <executable>true</executable>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.6</version>
+                <configuration>
+                    <destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
+                    <dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
+                    <output>file</output>
+                    <append>true</append>
+                    <excludes>
+                        <exclude>*MethodAccess</exclude>
+                        <exclude>fr/bibliotheque/BibliothequeApplication.class</exclude>
+                        <exclude>fr/bibliotheque/client/**/*</exclude>
+                        <exclude>fr/bibliotheque/reservation/constante/*</exclude>
+                        <exclude>fr/bibliotheque/reservation/controller/*</exclude>
+                        <exclude>fr/bibliotheque/reservation/dto/*</exclude>
+                        <exclude>fr/bibliotheque/reservation/exception/*</exclude>
+                        <exclude>fr/bibliotheque/reservation/mapper/*</exclude>
+                        <exclude>fr/bibliotheque/reservation/model/*</exclude>
+                        <exclude>fr/bibliotheque/reservation/repository/*</exclude>
+                        <exclude>fr/bibliotheque/reservation/validator/*</exclude>
+                        <exclude>fr/bibliotheque/livre/constante/*</exclude>
+                        <exclude>fr/bibliotheque/livre/controller/*</exclude>
+                        <exclude>fr/bibliotheque/livre/dto/*</exclude>
+                        <exclude>fr/bibliotheque/livre/exception/*</exclude>
+                        <exclude>fr/bibliotheque/livre/mapper/*</exclude>
+                        <exclude>fr/bibliotheque/livre/model/*</exclude>
+                        <exclude>fr/bibliotheque/livre/repository/*</exclude>
+                        <exclude>fr/bibliotheque/livre/validator/*</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <phase>test-compile</phase>
+                    </execution>
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

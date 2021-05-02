@@ -1,0 +1,12 @@
+---
+
+# Ubuntu Tasks
+- include_tasks: ubuntu/setupJava.yml
+  when: ansible_distribution == "Ubuntu"
+  tags:
+    - addRepoJavaUbuntu
+    - freshInstallJava11Ubuntu
+    - installJava11Ubuntu
+    - makeGroupJavaUbuntu
+    - makeUserJavaUbuntu
+    - makeJavaDirUbuntu

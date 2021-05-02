@@ -1,0 +1,10 @@
+---
+
+- include_tasks: ubuntu/setupApache2.yml
+  when: ansible_distribution == "Ubuntu"
+  tags:
+    - installApache
+    - freshInstallApache
+    - getAllVHostsApache
+    - deregisterAllVHostsApache
+    - enableModulesApache

@@ -82,3 +82,6 @@ hosts.yml
 
 # Maven
 *.iml
+
+*/.env-prod
+*/.env-preprod

@@ -1,0 +1,45 @@
+# fichier inventory utilisé en local ( a copier dans .inventory apres validation des tests )
+all:
+  hosts:
+  children:
+
+    local:
+      hosts:
+        localhost:
+          ansible_connection: local
+          ansible_host: "{{ ansible_host }}"
+          ansible_ssh_user: "{{ ansible_ssh_user }}"
+          ansible_ssh_password: "{{ ansible_ssh_password }}"
+          ansible_sudo_pass: "{{ ansible_sudo_pass }}"
+
+    tests:
+      hosts:
+        test:
+          ansible_host: "{{ ansible_host }}"
+          ansible_ssh_user: "{{ ansible_ssh_user }}"
+          ansible_ssh_password: "{{ ansible_ssh_password }}"
+          ansible_sudo_pass: "{{ ansible_sudo_pass }}"
+
+    filrougeservers:
+      hosts:
+
+        devfilrouge:
+          ansible_host: "{{ ansible_host }}"
+          ansible_ssh_user: "{{ ansible_ssh_user }}"
+          ansible_ssh_password: "{{ ansible_ssh_password }}"
+          ansible_sudo_pass: "{{ ansible_sudo_pass }}"
+
+        prodfilrouge:
+          ansible_host: "{{ ansible_host }}"
+          ansible_ssh_user: "{{ ansible_ssh_user }}"
+          ansible_ssh_password: "{{ ansible_ssh_password }}"
+          ansible_sudo_pass: "{{ ansible_sudo_pass }}"
+
+    elkservers:
+      hosts:
+
+        elk1:
+          ansible_host: "{{ ansible_host }}"
+          ansible_ssh_user: "{{ ansible_ssh_user }}"
+          ansible_ssh_password: "{{ ansible_ssh_password }}"
+          ansible_sudo_pass: "{{ ansible_sudo_pass }}"

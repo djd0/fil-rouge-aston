@@ -1,11 +1,12 @@
 # BUILD
 FROM node:15.12.0-alpine AS build
+ARG angular_build_env
 LABEL stage=build
 WORKDIR src/app
 COPY package.json ./
 RUN npm install
 COPY . .
-RUN npm run build
+RUN ${angular_build_env}
 
 # RUN
 FROM nginx:1.19.10-alpine

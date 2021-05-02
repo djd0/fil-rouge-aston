@@ -1,5 +1,0 @@
----
-
-# Ubuntu Tasks
-- include_tasks: ubuntu/setupUbuntu.yml
-  when: ansible_distribution == "Ubuntu"

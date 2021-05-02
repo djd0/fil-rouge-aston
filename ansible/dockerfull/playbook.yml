@@ -1,0 +1,20 @@
+---
+
+- hosts: local
+  roles:
+    - { role: docker }
+    - { role: dokuwiki }
+    - { role: bibliothequeapplication }
+
+- hosts: devfilrouge
+  roles:
+    - { role: common }
+    - { role: docker }
+    - { role: dokuwiki }
+    - { role: bibliothequeapplication }
+
+- hosts: prodfilrouge
+  roles:
+    - { role: common }
+    - { role: docker }
+    - { role: bibliothequeapplication }

@@ -1,0 +1,9 @@
+version: '3'
+services:
+  dokuwiki:
+    image: dhaeseq/projet-fil-rouge-groupe2:dokuwiki
+    container_name: dokuwiki
+    ports:
+      - 8081:80
+    volumes:
+      - /dokuwiki:/var/www/html/data

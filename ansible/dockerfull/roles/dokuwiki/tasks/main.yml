@@ -1,0 +1,72 @@
+---
+
+# BUILD IMAGE AND PUSH DOCKERHUB
+- name: Build dokuwiki image and send it to DockerHub
+  docker_image:
+    build:
+      path: "{{ role_path }}/files"
+    source: build
+    name: dhaeseq/projet-fil-rouge-groupe2:dokuwiki
+    tag: latest
+    push: yes
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushDokuwikiImage
+    - freshInstallDokuwiki
+
+# REMOVE LOCAL IMAGE
+- name: Remove local image
+  docker_image:
+    state: absent
+    name:  dhaeseq/projet-fil-rouge-groupe2
+    tag: dokuwiki
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushDokuwikiImage
+    - removeLocalDokuwikiImage
+    - freshInstallDokuwiki
+
+# COPY DOCKER-COMPOSE
+- name: Copy docker-compose
+  copy:
+    src: docker-compose.yml
+    dest: /home/{{ ansible_ssh_user }}/dokuwiki/
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewDokuwiki
+    - copyDokuwikiDockerCompose
+    - freshInstallDokuwiki
+
+# REMOVE EXISTING DOKUWIKI
+- name: Remove existing dokuwiki
+  docker_compose:
+    project_src: /home/{{ ansible_ssh_user }}/dokuwiki/
+    state: absent
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewDokuwiki
+    - reloadDokuwiki
+    - removeOldDokuwiki
+    - freshInstallDokuwiki
+
+# PULL DOKUWIKI IMAGE
+- name: Pull dokuwiki image
+  docker_image:
+    name: dhaeseq/projet-fil-rouge-groupe2:dokuwiki
+    source: pull
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewDokuwiki
+    - pullDokuwikiImage
+    - freshInstallDokuwiki
+
+# RUN IMAGE
+- name: Run dokuwiki image
+  docker_compose:
+    project_src: /home/{{ ansible_ssh_user }}/dokuwiki
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewDokuwiki
+    - reloadDokuwiki
+    - runDokuwikiImage
+    - freshInstallDokuwiki

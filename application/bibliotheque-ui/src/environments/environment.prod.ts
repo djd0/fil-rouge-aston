@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://fil-rouge-2.xyz:8080/'
+  apiUrl: '//fil-rouge-2.xyz:8080/api'
 };

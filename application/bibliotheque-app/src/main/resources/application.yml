@@ -20,4 +20,4 @@ server:
 logging:
   level:
     org.springframework.web: DEBUG
-    org.hibernate: DEBUG
+    fr.bibliotheque: DEBUG

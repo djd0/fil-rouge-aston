@@ -3,7 +3,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://bibliotheque-postgres:5432/bibliotheque
     username: groupe2ws
-    password: ${POSTGRESPWD}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   # JPA properties
   jpa:
     hibernate:
@@ -13,6 +13,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 server:
+  port: 8443
   error:
     include-message: always
     include-stacktrace: never
@@ -20,4 +21,4 @@ server:
 logging:
   level:
     org.springframework.web: DEBUG
-    org.hibernate: DEBUG
+    fr.bibliotheque: DEBUG

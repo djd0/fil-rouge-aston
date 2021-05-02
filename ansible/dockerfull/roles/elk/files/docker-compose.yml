@@ -1,0 +1,46 @@
+version: '3.2'
+
+services:
+
+  elasticsearch:
+
+    image: dhaeseq/projet-fil-rouge-groupe2:elasticsearch
+    volumes:
+      - type: volume
+        source: elasticsearch
+        target: /usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - elk
+
+  logstash:
+
+    image: dhaeseq/projet-fil-rouge-groupe2:logstash
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+  kibana:
+
+    image: dhaeseq/projet-fil-rouge-groupe2:kibana
+    ports:
+      - "5601:5601"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+networks:
+  elk:
+    driver: bridge
+
+volumes:
+  elasticsearch:

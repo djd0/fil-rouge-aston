@@ -1,0 +1,114 @@
+---
+
+# BUILD PREPROD FILEBEAT IMAGE AND PUSH DOCKERHUB
+- name: Build preprod filebeat image and send it to DockerHub
+  docker_image:
+    build:
+      path: "{{ role_path }}/files"
+      args:
+        env: preprod
+    source: build
+    name: dhaeseq/projet-fil-rouge-groupe2:filebeat-preprod
+    tag: latest
+    push: yes
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushFilebeatPreprodImage
+    - freshInstallFilebeat
+
+# REMOVE PREPROD FILEBEAT LOCAL IMAGE
+- name: Remove preprod filebeat local image
+  docker_image:
+    state: absent
+    name: dhaeseq/projet-fil-rouge-groupe2
+    tag: filebeat-preprod
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushFilebeatPreprodImage
+    - removeLocalFilebeatPreprodImage
+    - freshInstallFilebeat
+
+# BUILD PROD FILEBEAT IMAGE AND PUSH DOCKERHUB
+- name: Build prod filebeat image and send it to DockerHub
+  docker_image:
+    build:
+      path: "{{ role_path }}/files"
+      args:
+        env: prod
+    source: build
+    name: dhaeseq/projet-fil-rouge-groupe2:filebeat-prod
+    tag: latest
+    push: yes
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushFilebeatProdImage
+    - freshInstallFilebeat
+
+# REMOVE PROD FILEBEAT LOCAL IMAGE
+- name: Remove prod filebeat local image
+  docker_image:
+    state: absent
+    name: dhaeseq/projet-fil-rouge-groupe2
+    tag: filebeat-prod
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushFilebeatProdImage
+    - removeLocalFilebeatProdImage
+    - freshInstallFilebeat
+
+# COPY DOCKER-COMPOSE
+- name: Copy docker-compose
+  template:
+    src: docker-compose.yml
+    dest: /home/{{ ansible_ssh_user }}/filebeat/
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewFilebeat
+    - copyFilebeatDockerCompose
+    - freshInstallFilebeat
+
+# REMOVE EXISTING FILEBEAT
+- name: Remove existing filebeat
+  docker_compose:
+    project_src: /home/{{ ansible_ssh_user }}/filebeat/
+    state: absent
+    remove_images: all
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewFilebeat
+    - reloadFilebeat
+    - removeOldFilebeat
+    - freshInstallFilebeat
+
+# PULL PREPROD FILEBEAT IMAGE
+- name: Pull preprod filebeat image
+  docker_image:
+    name: dhaeseq/projet-fil-rouge-groupe2:filebeat-preprod
+    source: pull
+  when: inventory_hostname == "devfilrouge"
+  tags:
+    - runNewFilebeat
+    - pullFilebeatPreprodImage
+    - freshInstallFilebeat
+
+# PULL PROD FILEBEAT IMAGE
+- name: Pull prod filebeat image
+  docker_image:
+    name: dhaeseq/projet-fil-rouge-groupe2:filebeat-prod
+    source: pull
+  when: inventory_hostname == "prodfilrouge"
+  tags:
+    - runNewFilebeat
+    - pullFilebeatProdImage
+    - freshInstallFilebeat
+
+# RUN FILEBEAT IMAGES
+- name: Run filebeat image
+  docker_compose:
+    project_src: /home/{{ ansible_ssh_user }}/filebeat
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewFilebeat
+    - reloadFilebeat
+    - runFilebeatImages
+    - freshInstallFilebeat

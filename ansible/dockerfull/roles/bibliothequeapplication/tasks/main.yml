@@ -65,6 +65,7 @@
       path: /home/{{ ansible_ssh_user }}/Bureau/WorkSpace/fil-rouge-aston/application/bibliotheque-ui
       args:
         angular_build_env: "node_modules/.bin/ng build --configuration=preproduction"
+        env: preprod
     state: present
     source: build
     name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-ui-preprod
@@ -94,6 +95,7 @@
       path: /home/{{ ansible_ssh_user }}/Bureau/WorkSpace/fil-rouge-aston/application/bibliotheque-ui
       args:
         angular_build_env: "node_modules/.bin/ng build --configuration=production"
+        env: prod
     state: present
     source: build
     name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-ui-prod

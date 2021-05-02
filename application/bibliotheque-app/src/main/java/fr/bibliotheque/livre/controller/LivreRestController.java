@@ -19,7 +19,7 @@ import java.util.Map;
 @Slf4j
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @RestController
-@RequestMapping("livres")
+@RequestMapping("api/livres")
 public class LivreRestController {
 
     private final ILivreService livreService;

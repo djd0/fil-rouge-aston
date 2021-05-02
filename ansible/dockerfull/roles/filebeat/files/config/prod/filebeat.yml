@@ -1,0 +1,47 @@
+# You can find the full configuration reference here:
+# https://www.elastic.co/guide/en/beats/filebeat/index.html
+
+# ============================== Filebeat inputs ===============================
+
+filebeat.inputs:
+  - type: container
+    enable: true
+    paths:
+      - '/var/lib/docker/containers/*/*.log'
+    tags: ["prod"]
+
+logging.json: true
+logging.metrics.enabled: false
+
+#================================ Processors ===================================
+
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+  - add_kubernetes_metadata: ~
+  - add_docker_metadata:
+      host: "unix:///var/run/docker.sock"
+
+  - decode_json_fields:
+      fields: [ "message" ]
+      target: "json"
+      overwrite_keys: true
+
+#================================ Logstash Output ==============================
+
+output.logstash:
+  hosts: ["161.97.139.120:5044"]
+  index: prod
+
+#======================= Elasticsearch template setting ========================
+
+setup.template.settings:
+  index.number_of_shards: 1
+
+#============================== Filebeat modules ===============================
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false

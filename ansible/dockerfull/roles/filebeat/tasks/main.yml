@@ -56,59 +56,31 @@
     - removeLocalFilebeatProdImage
     - freshInstallFilebeat
 
-# COPY DOCKER-COMPOSE
-- name: Copy docker-compose
-  template:
-    src: docker-compose.yml
-    dest: /home/{{ ansible_ssh_user }}/filebeat/
-  when: inventory_hostname != "localhost"
-  tags:
-    - runNewFilebeat
-    - copyFilebeatDockerCompose
-    - freshInstallFilebeat
-
-# REMOVE EXISTING FILEBEAT
-- name: Remove existing filebeat
-  docker_compose:
-    project_src: /home/{{ ansible_ssh_user }}/filebeat/
-    state: absent
-    remove_images: all
-  when: inventory_hostname != "localhost"
-  tags:
-    - runNewFilebeat
-    - reloadFilebeat
-    - removeOldFilebeat
-    - freshInstallFilebeat
-
-# PULL PREPROD FILEBEAT IMAGE
-- name: Pull preprod filebeat image
-  docker_image:
-    name: dhaeseq/projet-fil-rouge-groupe2:filebeat-preprod
-    source: pull
-  when: inventory_hostname == "devfilrouge"
-  tags:
-    - runNewFilebeat
-    - pullFilebeatPreprodImage
-    - freshInstallFilebeat
-
-# PULL PROD FILEBEAT IMAGE
-- name: Pull prod filebeat image
-  docker_image:
-    name: dhaeseq/projet-fil-rouge-groupe2:filebeat-prod
-    source: pull
-  when: inventory_hostname == "prodfilrouge"
-  tags:
-    - runNewFilebeat
-    - pullFilebeatProdImage
-    - freshInstallFilebeat
-
-# RUN FILEBEAT IMAGES
+# RUN FILEBEAT IMAGE
 - name: Run filebeat image
-  docker_compose:
-    project_src: /home/{{ ansible_ssh_user }}/filebeat
-  when: inventory_hostname != "localhost"
+  docker_container:
+    detach: yes
+    image: dhaeseq/projet-fil-rouge-groupe2:filebeat-{{ env }}
+    pull: yes
+    recreate: yes
+    volumes:
+      - filebeat:/usr/share/filebeat/data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers/:/var/lib/docker/containers/:ro
+      - /var/log/:/var/log/:ro
+    name: filebeat
+    user: root
+    command: "filebeat -e -strict.perms=false"
+    restart_policy: always
+  when: inventory_hostname in groups.filrougeservers
   tags:
-    - runNewFilebeat
-    - reloadFilebeat
-    - runFilebeatImages
+    - runFilebeatImage
+    - freshInstallFilebeat
+
+# PRUNE IMAGES
+- name: Prune docker images
+  docker_prune:
+    images: yes
+  tags:
+    - pruneImages
     - freshInstallFilebeat

@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://bibliotheque-postgres:5432/bibliotheque
+    url: jdbc:postgresql://172.81.179.238:5432/bibliotheque
     username: groupe2ws
     password: ${SPRING_DATASOURCE_PASSWORD}
   # JPA properties

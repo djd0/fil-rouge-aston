@@ -1,9 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { merge, Observable, of as observableOf } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+
+import { ShowReservationComponent } from '../reservations/show-reservation/show-reservation.component';
+import { UpdateLivreComponent } from '../livres/update-livre/update-livre.component';
 
 import { Livre } from '../../model/Livre';
 import { LivreService } from '../../services/livre.service';
@@ -36,7 +40,8 @@ export class AccueilComponent  implements OnInit {
 
   constructor(private livreService: LivreService,
               private reservationService: ReservationService,
-              private router: Router) {
+              private router: Router,
+              private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -170,5 +175,28 @@ export class AccueilComponent  implements OnInit {
                       this.livres = this.getLivres(this.paginator.pageIndex, this.paginator.pageSize);
               });
     }
+  }
+
+  showReservation(reservation: any): void {
+    const dialogRef = this.dialog.open(ShowReservationComponent, {
+      width: '35%',
+      data: {reservation}
+    });
+
+    dialogRef.afterClosed()
+        .subscribe();
+  }
+
+  updateLivre(livre: any): void {
+    const dialogRef = this.dialog.open(UpdateLivreComponent, {
+      width: '25%',
+      data: {livre}
+    });
+
+    dialogRef.afterClosed()
+        .subscribe(
+            () => {
+                this.livres = this.getLivres(this.paginator.pageIndex, this.paginator.pageSize);
+        });
   }
 }

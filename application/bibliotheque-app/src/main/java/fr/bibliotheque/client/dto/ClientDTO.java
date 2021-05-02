@@ -13,6 +13,9 @@ import javax.validation.constraints.NotBlank;
 public class ClientDTO {
 
     @NotBlank
+    private long reference;
+
+    @NotBlank
     private String nom;
 
     @NotBlank

@@ -36,10 +36,10 @@ public class Reservation implements Serializable {
     @Column
     private boolean enPreparation;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.ALL})
     private List<Livre> livres;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     private Client client;
 
 }

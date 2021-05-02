@@ -27,7 +27,7 @@ public class BibliothequeApplication {
                         .allowedMethods("GET", "POST", "PATCH", "PUT", "DELETE")
                         .exposedHeaders("Access-Control-Allow-Origin")
                         .allowedOrigins(
-                                "http://localhost",
+                                "http://localhost:4200",
                                 "http://158.69.21.143",
                                 "http://fil-rouge-2.xyz",
                                 "https://fil-rouge-2.xyz");

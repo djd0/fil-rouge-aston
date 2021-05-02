@@ -40,7 +40,8 @@
     state: absent
     name:  dhaeseq/projet-fil-rouge-groupe2
     tag: bibliotheque-app-preprod
-  when: inventory_hostname == "localhost"
+    force_absent: yes
+  when: inventory_hostname != "prodfilrouge"
   tags:
     - buildAndPushPreprodAppNexusImage
     - buildAndPushPreprodAppImageWithSources
@@ -53,7 +54,7 @@
     build:
       path: /home/{{ ansible_ssh_user }}/Bureau/WorkSpace/fil-rouge-aston/application/bibliotheque-app
       args:
-        maven_build_env: mvn -f pom.xml clean package -Pprod
+        maven_build_env: mvn -f pom.xml clean package -Pprod -DskipTests
     state: present
     source: build
     name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-app-prod
@@ -87,7 +88,8 @@
     state: absent
     name:  dhaeseq/projet-fil-rouge-groupe2
     tag: bibliotheque-app-prod
-  when: inventory_hostname == "localhost"
+    force_absent: yes
+  when: inventory_hostname != "devfilrouge"
   tags:
     - buildAndPushProdAppNexusImage
     - buildAndPushProdAppImageWithSources
@@ -136,7 +138,8 @@
     state: absent
     name:  dhaeseq/projet-fil-rouge-groupe2
     tag: bibliotheque-ui-preprod
-  when: inventory_hostname == "localhost"
+    force_absent: yes
+  when: inventory_hostname != "prodfilrouge"
   tags:
     - buildAndPushPreprodUiNexusImage
     - buildAndPushPreprodUiImageWithSources
@@ -185,91 +188,94 @@
     state: absent
     name:  dhaeseq/projet-fil-rouge-groupe2
     tag: bibliotheque-ui-prod
-  when: inventory_hostname == "localhost"
+    force_absent: yes
+  when: inventory_hostname != "devfilrouge"
   tags:
     - buildAndPushProdUiNexusImage
     - buildAndPushProdUiImageWithSources
     - removeProdLocalUiImage
     - freshInstallApplication
 
-# REMOVE EXISTING BIBLIOTHEQUE APP
-- name: Remove existing bibliotheque app
-  docker_compose:
-    project_src: /home/{{ ansible_ssh_user }}/bibliotheque/
-    state: absent
-    remove_images: all
-  when: inventory_hostname != "localhost"
+# RUN POSTGRES IMAGE
+- name: Run postgres image
+  docker_container:
+    detach: yes
+    image: postgres:13.2-alpine
+    volumes:
+      - bibliotheque-data:/var/lib/postgresql/data
+    name: bibliotheque-postgres
+    env:
+      POSTGRES_DB: "bibliotheque"
+      POSTGRES_USER: "groupe2ws"
+      POSTGRES_PASSWORD: "{{ pg_password }}"
+    published_ports:
+      - 5432:5432
+    restart_policy: always
+  when: inventory_hostname in groups.filrougeservers
   tags:
-    - runNewProdBibliothequeApp
-    - runNewPreprodBibliothequeApp
-    - reloadBibliothequeApp
-    - removeOldBibliothequeApp
+    - runPostgresImage
     - freshInstallApplication
 
-# COPY DOCKER-COMPOSE
-- name: Copy docker-compose
-  template:
-    src: docker-compose.yml
-    dest: /home/{{ ansible_ssh_user }}/bibliotheque/
-  when: inventory_hostname != "localhost"
-  tags:
-    - runNewProdBibliothequeApp
-    - runNewPreprodBibliothequeApp
-    - copyBibliothequeAppDockerCompose
-    - freshInstallApplication
-
-# PULL PROD APP IMAGE
-- name: Pull prod app image
-  docker_image:
-    name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-app-prod
-    source: pull
-  when: inventory_hostname == "prodfilrouge"
-  tags:
-    - runNewProdBibliothequeApp
-    - pullProdAppImage
-    - freshInstallApplication
-
-# PULL PREPROD APP IMAGE
-- name: Pull preprod app image
-  docker_image:
-    name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-app-preprod
-    source: pull
+# RUN POSTGRES TEST IMAGE
+- name: Run postgres test image
+  docker_container:
+    detach: yes
+    image: postgres:13.2-alpine
+    name: bibliotheque-postgres-tests
+    env:
+      POSTGRES_DB: "bibliotheque"
+      POSTGRES_USER: "groupe2ws"
+      POSTGRES_PASSWORD: "12345"
+    published_ports:
+      - 5433:5432
+    restart_policy: always
   when: inventory_hostname == "devfilrouge"
   tags:
-    - runNewPreprodBibliothequeApp
-    - pullPreprodAppImage
+    - runPostgresTestImage
     - freshInstallApplication
 
-# PULL PROD UI IMAGE
-- name: Pull prod ui image
-  docker_image:
-    name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-ui-prod
-    source: pull
-  when: inventory_hostname == "prodfilrouge"
+# RUN APP IMAGE
+- name: Run app image
+  docker_container:
+    detach: yes
+    image: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-app-{{ env }}
+    pull: yes
+    recreate: yes
+    name: bibliotheque-app
+    env:
+      SPRING_PROFILES_ACTIVE: "{{ env }}"
+      SPRING_DATASOURCE_PASSWORD: "{{ pg_password }}"
+    published_ports:
+      - 8080:8443
+    restart_policy: always
+  when: inventory_hostname in groups.filrougeservers
   tags:
-    - runNewProdBibliothequeApp
-    - pullProdUiImage
+    - runAppImage
     - freshInstallApplication
 
-# PULL PREPROD UI IMAGE
-- name: Pull preprod ui image
-  docker_image:
-    name: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-ui-preprod
-    source: pull
-  when: inventory_hostname == "devfilrouge"
+# RUN UI IMAGE
+- name: Run ui image
+  docker_container:
+    detach: yes
+    image: dhaeseq/projet-fil-rouge-groupe2:bibliotheque-ui-{{ env }}
+    pull: yes
+    recreate: yes
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+    name: bibliotheque-ui
+    published_ports:
+      - 80:80
+      - 443:443
+    restart_policy: always
+  when: inventory_hostname in groups.filrougeservers
   tags:
-    - runNewPreprodBibliothequeApp
-    - pullPreprodUiImage
+    - runUiImage
     - freshInstallApplication
 
-# RUN IMAGE
-- name: Run bibliotheque image
-  docker_compose:
-    project_src: /home/{{ ansible_ssh_user }}/bibliotheque
-  when: inventory_hostname != "localhost"
+# PRUNE IMAGES
+- name: Prune docker images
+  docker_prune:
+    images: yes
   tags:
-    - runNewPreprodBibliothequeApp
-    - runNewProdBibliothequeApp
-    - reloadBibliothequeApp
-    - runBibliothequeAppImage
+    - pruneImages
     - freshInstallApplication

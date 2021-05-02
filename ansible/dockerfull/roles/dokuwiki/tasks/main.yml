@@ -20,53 +20,34 @@
     state: absent
     name:  dhaeseq/projet-fil-rouge-groupe2
     tag: dokuwiki
-  when: inventory_hostname == "localhost"
+    force_absent: yes
   tags:
     - buildAndPushDokuwikiImage
     - removeLocalDokuwikiImage
     - freshInstallDokuwiki
 
-# COPY DOCKER-COMPOSE
-- name: Copy docker-compose
-  copy:
-    src: docker-compose.yml
-    dest: /home/{{ ansible_ssh_user }}/dokuwiki/
-  when: inventory_hostname != "localhost"
-  tags:
-    - runNewDokuwiki
-    - copyDokuwikiDockerCompose
-    - freshInstallDokuwiki
-
-# REMOVE EXISTING DOKUWIKI
-- name: Remove existing dokuwiki
-  docker_compose:
-    project_src: /home/{{ ansible_ssh_user }}/dokuwiki/
-    state: absent
-  when: inventory_hostname != "localhost"
-  tags:
-    - runNewDokuwiki
-    - reloadDokuwiki
-    - removeOldDokuwiki
-    - freshInstallDokuwiki
-
-# PULL DOKUWIKI IMAGE
-- name: Pull dokuwiki image
-  docker_image:
-    name: dhaeseq/projet-fil-rouge-groupe2:dokuwiki
-    source: pull
-  when: inventory_hostname != "localhost"
-  tags:
-    - runNewDokuwiki
-    - pullDokuwikiImage
-    - freshInstallDokuwiki
-
-# RUN IMAGE
+# RUN DOKUWIKI IMAGE
 - name: Run dokuwiki image
-  docker_compose:
-    project_src: /home/{{ ansible_ssh_user }}/dokuwiki
-  when: inventory_hostname != "localhost"
+  docker_container:
+    detach: yes
+    image: dhaeseq/projet-fil-rouge-groupe2:dokuwiki
+    pull: yes
+    recreate: yes
+    volumes:
+      - /dokuwiki:/var/www/html/data
+    name: dokuwiki
+    published_ports:
+      - 8081:80
+    restart_policy: always
+  when: inventory_hostname == "devfilrouge"
   tags:
-    - runNewDokuwiki
-    - reloadDokuwiki
-    - runDokuwikiImage
+    - RunDokuwikiImage
+    - freshInstallDokuwiki
+
+# PRUNE IMAGES
+- name: Prune docker images
+  docker_prune:
+    images: yes
+  tags:
+    - pruneImages
     - freshInstallDokuwiki

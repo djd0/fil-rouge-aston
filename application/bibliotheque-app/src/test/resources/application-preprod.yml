@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://158.69.21.143:5432/bibliotheque
+    url: jdbc:postgresql://158.69.21.143:5433/bibliotheque
     username: groupe2ws
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    password: 12345
   # JPA properties
   jpa:
     hibernate:

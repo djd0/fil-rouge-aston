@@ -20,6 +20,7 @@ public class LivreMapper {
                 .genre(this.livreValidator.getFieldOrEmpty(dto.getGenre()))
                 .titre(dto.getTitre())
                 .quantite(dto.getQuantite())
+                .nombreDemandes(dto.getNombreDemandes())
                 .build();
     }
 

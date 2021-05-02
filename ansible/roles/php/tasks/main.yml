@@ -1,4 +1,0 @@
----
-
-- include_tasks: ubuntu/setupPhp.yml
-  when: ansible_distribution == "Ubuntu"

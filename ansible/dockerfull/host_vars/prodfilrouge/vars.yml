@@ -1,0 +1,12 @@
+---
+
+ansible_host: "{{ vault_ansible_host }}"
+ansible_ssh_user: "{{ vault_ansible_ssh_user }}"
+ansible_ssh_password: "{{ vault_ansible_ssh_password }}"
+ansible_sudo_pass: "{{ vault_ansible_sudo_pass }}"
+pg_password: "{{ vault_pg_password }}"
+dockerhub_username: "{{ vault_dockerhub_username }}"
+dockerhub_password: "{{ vault_dockerhub_password }}"
+env: prod
+angular_build_env: node_modules/.bin/ng build --configuration="production"
+maven_build_env: mvn -f pom.xml clean package -Pprod

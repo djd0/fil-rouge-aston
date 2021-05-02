@@ -1,0 +1,9 @@
+---
+
+users:
+  - username: "Riadh"
+    groups: "sudo,www-data"
+  - username: "Quentin"
+    groups: "sudo,www-data"
+  - username: "Aly"
+    groups: "sudo,www-data"

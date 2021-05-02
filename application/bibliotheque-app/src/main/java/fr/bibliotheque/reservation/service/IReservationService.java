@@ -14,6 +14,8 @@ public interface IReservationService  {
 
     Map<String, Object> getAllReservations(int page, int size);
 
+    Map<String, Object> getReservationsWithFilter(String filter, String value, int page, int size);
+
     long addReservation(ReservationDTO reservation) throws ReservationAlreadyExistsException;
 
     long validateReservation(long reference, String validatingDate) throws ReservationNotFoundException, ReservationAlreadyValidateException;

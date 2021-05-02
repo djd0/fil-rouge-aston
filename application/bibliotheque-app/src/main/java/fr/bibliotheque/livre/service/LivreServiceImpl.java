@@ -56,6 +56,43 @@ public class LivreServiceImpl implements ILivreService {
     }
 
     @Override
+    public Map<String, Object> getLivresWithFilter(String filter, String value, int page, int size) {
+
+        Pageable paging = PageRequest.of(page, size);
+        Page<Livre> pageLivres = null;
+
+        switch(filter) {
+
+            case "reference":
+                pageLivres = livreRepository.findByReference(paging, Long.parseLong(value));
+                break;
+            case "auteur":
+                pageLivres = livreRepository.findByAuteurContainingIgnoreCase(paging, value);
+                break;
+            case "titre":
+                pageLivres = livreRepository.findByTitreContainingIgnoreCase(paging, value);
+                break;
+            case "genre":
+                pageLivres = livreRepository.findByGenreContainingIgnoreCase(paging, value);
+                break;
+            default:
+                break;
+        }
+
+        Map<String, Object> response = new HashMap<>();
+
+        if(pageLivres != null) {
+            List<Livre> livres = pageLivres.getContent();
+            response.put("livres", livres);
+            response.put("currentPage", pageLivres.getNumber());
+            response.put("totalItems", pageLivres.getTotalElements());
+            response.put("totalPages", pageLivres.getTotalPages());
+        }
+
+        return response;
+    }
+
+    @Override
     public long addLivre(LivreDTO livre) throws LivreAlreadyExistsException {
 
         livreValidator.isLivreExists(livre);

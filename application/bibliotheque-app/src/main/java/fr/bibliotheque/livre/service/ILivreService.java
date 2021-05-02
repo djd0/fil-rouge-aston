@@ -15,6 +15,8 @@ public interface ILivreService {
 
     Map<String, Object> getAllLivres(int page, int size);
 
+    Map<String, Object> getLivresWithFilter(String filter, String value, int page, int size);
+
     long addLivre(LivreDTO livre) throws LivreAlreadyExistsException;
 
     long updateLivre(long reference, LivreDTO livre) throws LivreNotFoundException;

@@ -17,6 +17,14 @@ public interface LivreRepository extends PagingAndSortingRepository<Livre, Long>
 
     Livre findByAuteurAndTitreIgnoreCase(String auteur, String titre);
 
+    Page<Livre> findByAuteurContainingIgnoreCase(Pageable pageable, String auteur);
+
+    Page<Livre> findByTitreContainingIgnoreCase(Pageable pageable, String titre);
+
+    Page<Livre> findByReference(Pageable pageable, long reference);
+
+    Page<Livre> findByGenreContainingIgnoreCase(Pageable pageable, String genre);
+
     @Transactional
     void deleteByReference(long reference);
 

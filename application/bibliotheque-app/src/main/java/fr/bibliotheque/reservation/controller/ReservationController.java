@@ -51,6 +51,18 @@ public class ReservationController {
         }
     }
 
+    @GetMapping(value="/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> getReservationsWithFilter(@RequestParam(name = "filter") String filter,
+                                                   @RequestParam(name = "value") String value,
+                                                   @RequestParam(name = "page", defaultValue = "0") int page,
+                                                   @RequestParam(name = "size", defaultValue = "10") int size) {
+
+
+        log.debug(String.format("Get reservations with %s filter on %s value", filter, value));
+        return this.reservationService.getReservationsWithFilter(filter, value, page, size);
+
+    }
+
     @GetMapping(value="/daily", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> getReservationDuJour(@RequestParam(name = "page", defaultValue = "0") int page,
                                                   @RequestParam(name = "size", defaultValue = "5") int size) {

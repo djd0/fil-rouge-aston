@@ -120,6 +120,51 @@ class ReservationServiceTests {
     }
 
     @Test
+    void getReservationsWithFilter() throws ReservationAlreadyExistsException {
+
+        List<Livre> livres = new ArrayList<>();
+        livres.add(Livre.builder()
+                .reference(1)
+                .titre("test")
+                .auteur("test")
+                .build()
+        );
+
+        Client client = Client.builder()
+                .reference(1)
+                .nom("Jean")
+                .prenom("Claude")
+                .numeroTel("0123456789")
+                .email("jean@claude.fr")
+                .build();
+
+        ReservationDTO reservation1 = ReservationDTO.builder()
+                .reference(1)
+                .dateReservation(reservationMapper.dateTimeToString(LocalDateTime.now()))
+                .enPreparation(false)
+                .livres(livres)
+                .client(client)
+                .build();
+
+        ReservationDTO reservation2 = ReservationDTO.builder()
+                .reference(2)
+                .dateReservation(reservationMapper.dateTimeToString(LocalDateTime.now()))
+                .enPreparation(false)
+                .livres(livres)
+                .client(client)
+                .build();
+
+        long id = reservationService.addReservation(reservation1);
+        reservationService.addReservation(reservation2);
+        List<Reservation> reservations = (List<Reservation>) reservationService.getReservationsWithFilter("reference", String.valueOf(id), 0, 5).getOrDefault("reservations", null);
+        assertEquals(id, reservations.get(0).getReference());
+        reservations = (List<Reservation>) reservationService.getReservationsWithFilter("nom", "Jean", 0, 5).getOrDefault("reservations", null);
+        assertEquals("Jean", reservations.get(0).getClient().getNom());
+        reservationService.deleteAll();
+        livreService.deleteAll();
+    }
+
+    @Test
     void getReservationDuJour() throws ReservationAlreadyExistsException {
 
         List<Livre> livres = new ArrayList<>();

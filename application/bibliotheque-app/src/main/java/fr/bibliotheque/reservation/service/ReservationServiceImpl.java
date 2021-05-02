@@ -61,6 +61,37 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
+    public Map<String, Object> getReservationsWithFilter(String filter, String value, int page, int size) {
+
+        Pageable paging = PageRequest.of(page, size);
+        Page<Reservation> pageReservations = null;
+
+        switch(filter) {
+
+            case "reference":
+                pageReservations = reservationRepository.findByReference(paging, Long.parseLong(value));
+                break;
+            case "nom":
+                pageReservations = reservationRepository.findByClientNomContainingIgnoreCase(paging, value);
+                break;
+            default:
+                break;
+        }
+
+        Map<String, Object> response = new HashMap<>();
+
+        if(pageReservations != null) {
+            List<Reservation> reservations = pageReservations.getContent();
+            response.put("reservations", reservations);
+            response.put("currentPage", pageReservations.getNumber());
+            response.put("totalItems", pageReservations.getTotalElements());
+            response.put("totalPages", pageReservations.getTotalPages());
+        }
+
+        return response;
+    }
+
+    @Override
     public long addReservation(ReservationDTO reservation) throws ReservationAlreadyExistsException {
 
         reservationValidator.isReservationExists(reservation);

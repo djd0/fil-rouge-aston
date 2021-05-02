@@ -16,6 +16,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Transactional
     void deleteByReference(long reference);
 
+    Page<Reservation> findByReference(Pageable pageable, long reference);
+
+    Page<Reservation> findByClientNomContainingIgnoreCase(Pageable pageable, String genre);
+
     @Query("SELECT r from Reservation r where r.dateReservation >= CURRENT_DATE and r.dateReservation <= CURRENT_DATE +1 and r.dateRetrait is null order by r.dateReservation asc")
     Page<Reservation> findDailyReservationsOrderByTime(Pageable pageable);
 }

@@ -60,6 +60,36 @@ class LivreServiceTests {
     }
 
     @Test
+    void getLivresWithFilter() throws LivreAlreadyExistsException {
+
+        LivreDTO livre1 = LivreDTO.builder()
+                .reference(1)
+                .titre("test1")
+                .auteur("test1")
+                .build();
+
+        LivreDTO livre2 = LivreDTO.builder()
+                .reference(2)
+                .titre("test2")
+                .auteur("test2")
+                .genre("test2")
+                .build();
+
+        long id = livreService.addLivre(livre1);
+        livreService.addLivre(livre2);
+        List<Livre> livres = (List<Livre>) livreService.getLivresWithFilter("titre", "test1", 0, 5).getOrDefault("livres", null);
+        assertEquals("test1", livres.get(0).getTitre());
+        livres = (List<Livre>) livreService.getLivresWithFilter("genre", "test2", 0, 5).getOrDefault("livres", null);
+        assertEquals("test2", livres.get(0).getGenre());
+        livres = (List<Livre>) livreService.getLivresWithFilter("auteur", "test1", 0, 5).getOrDefault("livres", null);
+        assertEquals("test1", livres.get(0).getAuteur());
+        livres = (List<Livre>) livreService.getLivresWithFilter("reference", String.valueOf(id), 0, 5).getOrDefault("livres", null);
+        assertEquals(id, livres.get(0).getReference());
+        reservationService.deleteAll();
+        livreService.deleteAll();
+    }
+
+    @Test
     void getLivre() throws LivreNotFoundException, LivreAlreadyExistsException  {
 
         LivreDTO livre = LivreDTO.builder()

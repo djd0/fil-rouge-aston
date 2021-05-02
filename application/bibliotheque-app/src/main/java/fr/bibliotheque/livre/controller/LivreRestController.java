@@ -49,6 +49,18 @@ public class LivreRestController {
         }
     }
 
+    @GetMapping(value="/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> getLivresWithFilter(@RequestParam(name = "filter") String filter,
+                                                   @RequestParam(name = "value") String value,
+                                                   @RequestParam(name = "page", defaultValue = "0") int page,
+                                                   @RequestParam(name = "size", defaultValue = "10") int size) {
+
+
+            log.debug(String.format("Get livres with %s filter on %s value", filter, value));
+            return this.livreService.getLivresWithFilter(filter, value, page, size);
+
+    }
+
     @GetMapping(value="/commandes", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> getLivreACommander(@RequestParam(name = "page", defaultValue = "0") int page,
                                                  @RequestParam(name = "size", defaultValue = "10") int size) {

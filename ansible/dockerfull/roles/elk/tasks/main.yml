@@ -1,0 +1,160 @@
+---
+
+# BUILD ELASTICSEARCH IMAGE AND PUSH DOCKERHUB
+- name: Build elasticsearch image and send it to DockerHub
+  docker_image:
+    build:
+      path: "{{ role_path }}/files/elasticsearch"
+    source: build
+    name: dhaeseq/projet-fil-rouge-groupe2:elasticsearch
+    tag: latest
+    push: yes
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushElasticsearchImage
+    - freshInstallElk
+
+# REMOVE ELASTICSEARCH LOCAL IMAGE
+- name: Remove elasticsearch local image
+  docker_image:
+    state: absent
+    name: dhaeseq/projet-fil-rouge-groupe2
+    tag: elasticsearch
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushElasticsearchImage
+    - removeLocalElasticsearchImage
+    - freshInstallElk
+
+# BUILD KIBANA IMAGE AND PUSH DOCKERHUB
+- name: Build kibana image and send it to DockerHub
+  docker_image:
+    build:
+      path: "{{ role_path }}/files/kibana"
+    source: build
+    name: dhaeseq/projet-fil-rouge-groupe2:kibana
+    tag: latest
+    push: yes
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushKibanaImage
+    - freshInstallElk
+
+# REMOVE KIBANA LOCAL IMAGE
+- name: Remove kibana local image
+  docker_image:
+    state: absent
+    name:  dhaeseq/projet-fil-rouge-groupe2
+    tag: kibana
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushKibanaImage
+    - removeLocalKibanaImage
+    - freshInstallElk
+
+# BUILD LOGSTASH IMAGE AND PUSH DOCKERHUB
+- name: Build logstash image and send it to DockerHub
+  docker_image:
+    build:
+      path: "{{ role_path }}/files/logstash"
+    source: build
+    name: dhaeseq/projet-fil-rouge-groupe2:logstash
+    tag: latest
+    push: yes
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushLogstashImage
+    - freshInstallElk
+
+# REMOVE LOGSTASH LOCAL IMAGE
+- name: Remove logstash local image
+  docker_image:
+    state: absent
+    name:  dhaeseq/projet-fil-rouge-groupe2
+    tag: logstash
+  when: inventory_hostname == "localhost"
+  tags:
+    - buildAndPushLogstashImage
+    - removeLocalLogstashImage
+    - freshInstallElk
+
+# COPY DOCKER-COMPOSE
+- name: Copy docker-compose
+  copy:
+    src: docker-compose.yml
+    dest: /home/{{ ansible_ssh_user }}/elk/
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewElk
+    - copyElkDockerCompose
+    - freshInstallElk
+
+# REMOVE EXISTING ELK
+- name: Remove existing elk
+  docker_compose:
+    project_src: /home/{{ ansible_ssh_user }}/elk/
+    state: absent
+    remove_images: all
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewElk
+    - reloadElk
+    - removeOldElk
+    - freshInstallElk
+
+# PULL ELASTICSEARCH IMAGE
+- name: Pull elasticsearch image
+  docker_image:
+    name: dhaeseq/projet-fil-rouge-groupe2:elasticsearch
+    source: pull
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewElk
+    - pullElasticsearchImage
+    - freshInstallElk
+
+# PULL KIBANA IMAGE
+- name: Pull kibana image
+  docker_image:
+    name: dhaeseq/projet-fil-rouge-groupe2:kibana
+    source: pull
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewElk
+    - pullKibanaImage
+    - freshInstallElk
+
+# PULL LOGSTASH IMAGE
+- name: Pull logstash image
+  docker_image:
+    name: dhaeseq/projet-fil-rouge-groupe2:logstash
+    source: pull
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewElk
+    - pullLogstashImage
+    - freshInstallElk
+
+# SET MMAP COUNTS
+- name: set mmap counts for elasticsearch
+  sysctl:
+    name: vm.max_map_count
+    value: '262144'
+    state: present
+    sysctl_set: yes
+  become: yes
+  when: inventory_hostname in groups.elkservers
+  tags:
+    - setMmapCount
+    - freshInstallElk
+
+# RUN ELK IMAGES
+- name: Run elk image
+  docker_compose:
+    project_src: /home/{{ ansible_ssh_user }}/elk
+  when: inventory_hostname != "localhost"
+  tags:
+    - runNewElk
+    - reloadElk
+    - runElkImages
+    - freshInstallElk

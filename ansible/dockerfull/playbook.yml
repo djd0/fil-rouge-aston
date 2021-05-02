@@ -3,18 +3,23 @@
 - hosts: local
   roles:
     - { role: docker }
-    - { role: dokuwiki }
+#    - { role: dokuwiki }
     - { role: bibliothequeapplication }
+#    - { role: elk }
+#    - { role: filebeat }
 
-- hosts: devfilrouge
+- hosts: filrougeservers
   roles:
-    - { role: common }
+#    - { role: common }
+#    - { role: usersfilrouge }
     - { role: docker }
-    - { role: dokuwiki }
+#    - { role: dokuwiki, when: inventory_hostname == "devfilrouge" }
     - { role: bibliothequeapplication }
+#    - { role: filebeat }
 
-- hosts: prodfilrouge
-  roles:
-    - { role: common }
-    - { role: docker }
-    - { role: bibliothequeapplication }
+#- hosts: elk1
+#  roles:
+#    - { role: common }
+#    - { role: usersfilrouge }
+#    - { role: docker }
+#    - { role: elk }

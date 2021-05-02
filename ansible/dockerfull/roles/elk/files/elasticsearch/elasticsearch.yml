@@ -1,0 +1,8 @@
+---
+
+## Default Elasticsearch configuration from Elasticsearch base image.
+## https://github.com/elastic/elasticsearch/blob/master/distribution/docker/src/docker/config/elasticsearch.yml
+network.host: 0.0.0.0
+discovery.type: single-node
+search:
+  default_allow_partial_results: true

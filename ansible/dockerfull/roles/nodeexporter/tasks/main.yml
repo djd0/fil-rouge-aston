@@ -1,0 +1,33 @@
+---
+
+# REMOVE NODE EXPORTER LOCAL IMAGE
+- name: Remove node exporter local image
+  docker_image:
+    state: absent
+    name:  prom/node-exporter
+    tag: latest
+    force_absent: yes
+  tags:
+    - removeNodeexporterLocalImage
+    - freshInstallNodeexporter
+
+# RUN NODE EXPORTER IMAGE
+- name: Run node exporter image
+  docker_container:
+    detach: yes
+    image: prom/node-exporter:latest
+    name: monitoring_node_exporter
+    published_ports:
+      - 9100:9100
+    restart_policy: always
+  tags:
+    - runNodeexporterImage
+    - freshInstallNodeexporter
+
+# PRUNE IMAGES
+- name: Prune docker images
+  docker_prune:
+    images: yes
+  tags:
+    - pruneImages
+    - freshInstallNodeexporter

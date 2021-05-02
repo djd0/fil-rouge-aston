@@ -18,6 +18,7 @@
     - { role: bibliothequeapplication }
     - { role: filebeat }
     - { role: portainer }
+    - { role: nodeexporter }
 
 - hosts: elk1
   roles:
@@ -26,6 +27,7 @@
     - { role: docker }
     - { role: elk }
     - { role: portainer }
+    - { role: nodeexporter }
 
 - hosts: jenkins
   roles:
@@ -35,3 +37,4 @@
     - { role: jenkins }
     - { role: portainer }
     - { role: bibliothequeapplication }
+    - { role: prometheus }

@@ -2,7 +2,7 @@
 
 - hosts: filrougeservers
   roles:
-    - { role: handlers } # FIXME workaround of ansible known bug with meta ( change when bug will be fixed in new versions )
+    - { role: handlers }
     - { role: common }
     - { role: usersfilrouge }
     - { role: dokuwiki, when: inventory_hostname == "devfilrouge" }

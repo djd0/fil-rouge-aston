@@ -44,9 +44,8 @@ Pour lancer l'application complete, lancez la commande suivante :
 docker-compose up
 ```
 
-La commande permet de lancer 3 containers contenant respectivement : 
+La commande permet de lancer 2 containers contenant respectivement : 
 
-- Une base de donnée PostgreSQL
 - L'interface web sous Angular
 - L'API REST sous Java
 

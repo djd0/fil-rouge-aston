@@ -16,11 +16,13 @@ Des instructions pour chaque systeme sont disponibles dans chacun de leur dossie
 
 ### Ansible
 
-Le dossier ansible contient tous les scripts de provisionnement pour déployer : 
+Le dossier ansible contient tous les scripts de provisionnement pour déployer soit avec docker soit sans : 
 
 - L'application avec la partie front Angular, la partie back Java et la base de donnée PostgreSQL
 - Un Wikipedia personnel avec différents tutoriels sur les outils utilisés tout au long du projet
 - La stack ELK pour la gestion des logs de l'application
+- Une stack Jenkins pour le CI/CD
+- Du monitoring avec prometheus, grafana et portainer
 
 Elle comprend également toute la partie de création des différents utilisateurs ainsi que la configuration des différents serveurs (sécurité, packages de base, dépendances)
 
@@ -30,7 +32,11 @@ Le dossier application contient une application de gestion pour bibliotheque
 
 L'application comprend une partie Angular pour l'interface (UI) et la partie Java pour l'API REST (APP)
 
-Elle est déployable en local sous docker avec un docker-compose ou à la main via Maven et Angular
+Elle est déployable en local sous docker avec un docker-compose ou à la main via Maven et Angular.
+Le deploiement sur les serveurs ce fait soit par des tâches Ansible (Docker ou non) ou via deux pipelines Jenkins (un pour l'UI et un pour les services).
+
+Lien services : https://github.com/dhaeseq/bibliotheque-services
+Lien UI : https://github.com/dhaeseq/bibliotheque-ui
 
 ### BDD
 

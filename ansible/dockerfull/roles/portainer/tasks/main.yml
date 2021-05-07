@@ -1,4 +1,23 @@
 ---
+# REMOVE PORTAINER-CE
+- name: Remove portainer-ce
+  docker_image:
+    state: absent
+    name:  portainer/portainer-ce:alpine
+    tag: latest
+    force_absent: yes
+  tags:
+    - removeOldPortainerCE
+
+# REMOVE PORTAINER-AGENT
+- name: Remove portainer-agent
+  docker_image:
+    state: absent
+    name:  portainer/agent:linux-amd64-2.4.0-alpine
+    tag: latest
+    force_absent: yes
+  tags:
+    - removeOldPortainerAgent
 
 # RUN PORTAINER-CE IMAGE
 - name: Run portainer-ce image

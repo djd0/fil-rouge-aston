@@ -52,8 +52,8 @@ Ce dossier comprend les scripts de provisionnement pour mettre en place un envir
 
 ### DockerLess
 
-![alt Architecture des serveurs sans docker](architectureServeursDockerLess.png "Architecture des serveurs sans docker")
+![alt Architecture des serveurs sans docker](architectureServeursDockerLessV2.png "Architecture des serveurs sans docker")
 
 ### DockerFull
 
-![alt Architecture des serveurs avec docker](architectureServeursDockerFull.png "Architecture des serveurs avec docker")
+![alt Architecture des serveurs avec docker](architectureServeursDockerFullV2.png "Architecture des serveurs avec docker")

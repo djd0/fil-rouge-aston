@@ -21,8 +21,9 @@ Le dossier ansible contient tous les scripts de provisionnement pour déployer :
 - L'application avec la partie front Angular, la partie back Java et la base de donnée PostgreSQL
 - Un Wikipedia personnel avec différents tutoriels sur les outils utilisés tout au long du projet
 - La stack ELK pour la gestion des logs de l'application
-- Une stack Jenkins pour la CI/CD
-- Une stack de monitoring avec prometheus et grafana
+- Une stack Jenkins pour la CI/CD (docker exclusif)
+- Une stack de monitoring avec prometheus et grafana (docker exclusif)
+- Portainer pour la gestion des containers (docker exclusif)
 
 Elle comprend également toute la partie de création des différents utilisateurs ainsi que la configuration des différents serveurs (sécurité, packages de base, dépendances)
 

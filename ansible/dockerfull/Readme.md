@@ -127,6 +127,11 @@ Le reste dépend de vos besoins.
 
 ## Cartographie
 
+## V2
+
+![alt Cartographie des roles](cartographieRolesV2.png "Cartographie des roles")
+
+## V1
 ### Rôles, tâches et dépendances
 
 ![alt Cartographie des roles](cartographieRoles.png "Cartographie des roles")
